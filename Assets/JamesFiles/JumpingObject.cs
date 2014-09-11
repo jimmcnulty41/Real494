@@ -24,7 +24,8 @@ public class JumpingObject : MonoBehaviour {
 		//	Make velocity equal to the jump velocity
 		po.vel += new Vector3(0,jumpVelocity,0);
 		po.onGround = false;
-		jumpBottom = transform.position;
+		falling = false;
+		jumpBottom = transform.position;		
 	}
 	
 	public void startFalling(){
@@ -40,8 +41,11 @@ public class JumpingObject : MonoBehaviour {
 	
 	void managePhysics(){
 		PhysicsObject po = GetComponent<PhysicsObject>();
-		if (po.onGround)
+		if (po.onGround){
 			falling = false;
+			jump ();
+			return;
+		}
 		if (falling) transitionToFallingVelocity();
 		if (atJumpTop()) endjump();
 	}	
