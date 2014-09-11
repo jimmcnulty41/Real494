@@ -43,7 +43,6 @@ public class JumpingObject : MonoBehaviour {
 		PhysicsObject po = GetComponent<PhysicsObject>();
 		if (po.onGround){
 			falling = false;
-			jump ();
 			return;
 		}
 		if (falling) transitionToFallingVelocity();
