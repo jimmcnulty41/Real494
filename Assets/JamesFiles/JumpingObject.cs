@@ -13,7 +13,6 @@ public class JumpingObject : MonoBehaviour {
 	public float jumpEasing = .2f;
 	public float runSpeed = 1f;
 	Vector3 jumpBottom;
-	bool falling = false;
 	
 	//	Public functions to call
 	//==============================================
@@ -24,48 +23,25 @@ public class JumpingObject : MonoBehaviour {
 		//	Make velocity equal to the jump velocity
 		po.vel += new Vector3(0,jumpVelocity,0);
 		po.onGround = false;
-		falling = false;
 		jumpBottom = transform.position;		
-	}
-	
-	public void startFalling(){
-		falling = true;
 	}
 	
 	//	During update
 	//=============================
 	
-	void Update(){
+	void FixedUpdate(){
+		if (GetComponent<PhysicsObject>().onGround) return;
 		managePhysics();
 	}
 	
 	void managePhysics(){
-		PhysicsObject po = GetComponent<PhysicsObject>();
-		if (po.onGround){
-			falling = false;
-			return;
-		}
-		if (falling) transitionToFallingVelocity();
-		if (atJumpTop()) endjump();
+		if (atJumpTop()) GetComponent<FallingObject>().startJumpFall();
 	}	
 	
-	void transitionToFallingVelocity(){
-		PhysicsObject po = GetComponent<PhysicsObject>();
-		Vector3 vel = po.vel;
-		if (vel.y < 0) return;
-		vel.y = Mathf.Lerp(vel.y,0,jumpEasing);
-		po.vel = vel;
-	}
-	
 	bool atJumpTop(){
-		if (falling) return false;
+		if (GetComponent<FallingObject>().falling) return false;
 		return (transform.position.y - jumpBottom.y >= jumpHeight);
 	}
-		
-	void endjump(){
-		PhysicsObject po = GetComponent<PhysicsObject>();
-		po.accel = new Vector3(0,-fallSpeed,0);
-		falling = true;
-	}
+
 
 }
