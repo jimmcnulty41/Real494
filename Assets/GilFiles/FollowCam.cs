@@ -6,9 +6,9 @@ public class FollowCam : MonoBehaviour {
 
 	public bool ___________________;
 	public GameObject hero = GameObject.Find("Hero");
-	public float RegionBoudryX;
-	public float RegionBoudryY1;
-	public float RegionBoundryY2;
+	public float RegionBoundaryX;
+	public float RegionBoundaryY1;
+	public float RegionBoundaryY2;
 	// Use this for initialization
 	void Start () {
 		
@@ -23,18 +23,20 @@ public class FollowCam : MonoBehaviour {
 		float FollowY; //used to check if camera should move up
 
 		//have camera follow the hero on the x axis:
-		Vector3 destination = hero.transform.position;
-		Vector3 destinationX = new Vector3 (destination.x, 0, 0);
-		transform.position += destinationX;
+		Vector3 targetPos = hero.transform.position;
+		Vector3 destination = transform.position;
+		destination.x = targetPos.x;
+		transform.position = destination;
 
 		//check if the camera has crossed the hardcoded boundry, and set the Y boundry accordingly:
-		if (transform.position.x > RegionBoudryX) { FollowY = RegionBoundryY2; }
-		else { FollowY = RegionBoundryY2; }
+		if (transform.position.x > RegionBoundaryX) { FollowY = RegionBoundaryY2; }
+		else { FollowY = RegionBoundaryY1; }
 
 		//check if the target destination crosses the Y boundry, and follow if so:
-		if (destination.y > FollowY) {
-		Vector3 destinationY = new Vector3 (0, destination.y, 0);
-		transform.position += destinationY;
+		if (targetPos.y > FollowY) {
+			Vector3 destinationY = transform.position;
+			destinationY.y = targetPos.y;
+			transform.position = destinationY;
 		}
 		
 	}
