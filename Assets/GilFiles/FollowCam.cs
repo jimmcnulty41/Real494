@@ -5,10 +5,11 @@ public class FollowCam : MonoBehaviour {
 	static public FollowCam S;
 
 	public bool ___________________;
-	public GameObject hero = GameObject.Find("Hero");
+	public GameObject hero;
 	public float RegionBoundaryX;
 	public float RegionBoundaryY1;
 	public float RegionBoundaryY2;
+	bool falling = false;
 	// Use this for initialization
 	void Start () {
 		
@@ -33,11 +34,16 @@ public class FollowCam : MonoBehaviour {
 		else { FollowY = RegionBoundaryY1; }
 
 		//check if the target destination crosses the Y boundry, and follow if so:
-		if (targetPos.y > FollowY) {
+		 if (targetPos.y > FollowY) {
 			Vector3 destinationY = transform.position;
 			destinationY.y = targetPos.y;
 			transform.position = destinationY;
+			falling = true;
+		} else if (falling == true) {
+			Vector3 destinationY = transform.position;
+			destinationY.y = targetPos.y;
+			transform.position = destinationY;
+			falling = false;
 		}
-		
 	}
 }
