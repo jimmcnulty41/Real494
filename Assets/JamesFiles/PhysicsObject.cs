@@ -1,6 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//	PhysicsObject Class
+//================================================
+//================================================
+/*	The PhysicsObject Class allows objects to react to a limited
+ * 	physics simulation.
+ * 
+ * 	While up-down movement responds to acceleration, 
+ * 	side-side movement only factors velocity. 
+ * 	Side-side velocity can be changed 
+ * 
+ * 	Provides a function to change side speed and a function to 
+ * 	be called when an object lands
+ * 
+ */
+
 public class PhysicsObject : MonoBehaviour {
 
 	//public Vector3 gravity = new Vector3(0,-9.8f,0);
@@ -19,18 +34,7 @@ public class PhysicsObject : MonoBehaviour {
 		curVel.x = speed;
 		vel = curVel;
 	}
-	
-	public void changeX(float amt){
-		Vector3 pos = transform.position;
-		pos.x = amt;
-		transform.position = pos;
-	}
-	
-	public void changeY(float amt){
-		Vector3 pos = transform.position;
-		pos.y = amt;
-		transform.position = pos;
-	}
+
 	
 	//	Updates state of object so it knows it is on the ground; stops vertical movement
 	public void land(){
@@ -64,7 +68,6 @@ public class PhysicsObject : MonoBehaviour {
 	}
 	
 	void manageUpDownMovement(){
-		//accel += gravity * Time.deltaTime;
 		vel += accel * Time.deltaTime;
 		Vector3 pos = transform.position;
 		pos.y += vel.y * Time.deltaTime;

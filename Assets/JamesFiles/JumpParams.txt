@@ -1,1 +1,14 @@
 
+Standard Jump:
+
+	Jump velocity: 8
+	Jump Height : 1.2
+	Fall Speed: 24
+	Transition Easing: .05
+	
+Frog Jump:
+
+	Jump velocity: 8
+	Jump Height : 2.3
+	Fall Speed: 24
+	Transition Easing: .05

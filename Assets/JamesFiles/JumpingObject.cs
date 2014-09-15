@@ -1,6 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//	JumpingObject Class
+//================================================
+//================================================
+/*	This class allows objects to have normal "jumping" upward movement
+ * 	
+ * 	This class controls how quickly the object will "jump" as well as the 
+ *  point in the jump where the object will begin to fall
+ * 
+ * 	REQUIRES PHYSICS OBJECT
+ */
+
 public class JumpingObject : MonoBehaviour {
 
 	//	Moving objects have the ability to jump at a certain speed,
@@ -8,10 +19,7 @@ public class JumpingObject : MonoBehaviour {
 	//	also have the ability to move sideways at a certain speed
 	
 	public float jumpVelocity = 6;
-	public float fallSpeed = 30;
-	public float jumpHeight = 2;
-	public float jumpEasing = .2f;
-	public float runSpeed = 1f;
+	public float jumpHeight = 1.2f;
 	Vector3 jumpBottom;
 	
 	//	Public functions to call

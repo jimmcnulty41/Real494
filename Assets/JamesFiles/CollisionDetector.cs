@@ -9,10 +9,25 @@ enum relationToOther{
 	UNDERNEATH
 }
 
+//	CollisionDetector Class
+//================================================
+//================================================
+/*	This class allows objects to react normally to 
+ * 	collisions with things. If this is enabled on 
+ *  an object, that object will
+ * 		1. Not be able to move sideways through other objects
+ * 		2. Not be able to move up or down through other objects
+ * 
+ * 
+ * 	REQUIRES PHYSICS OBJECT 
+ * 		OPTIONALLY REQUIRES JUMPING OBJECT IF INFINITE JUMP IS DESIRED
+ */
+
 public class CollisionDetector : MonoBehaviour {
 
 	public float forgiveness = .3f;
 	public float sinkamt = .001f;
+	public bool infinite_jump = false;
 	
 	Dictionary<Collider, relationToOther> touchingObjects 
 		= new Dictionary<Collider, relationToOther>();
@@ -38,19 +53,31 @@ public class CollisionDetector : MonoBehaviour {
 		PhysicsObject po = GetComponent<PhysicsObject>();
 		switch(touchingObjects[other]){
 			case relationToOther.ONTOP:
-				po.changeY(other.transform.position.y + getTouchingDistanceY(other.gameObject));
+				changeY(other.transform.position.y + getTouchingDistanceY(other.gameObject));
 				break;
 			case relationToOther.TOLEFT:	
-				po.changeX(other.transform.position.x - getTouchingDistanceX(other.gameObject));
+				changeX(other.transform.position.x - getTouchingDistanceX(other.gameObject));
 				break;
 			case relationToOther.TORIGHT:
-				po.changeX(other.transform.position.x + getTouchingDistanceX(other.gameObject));
+				changeX(other.transform.position.x + getTouchingDistanceX(other.gameObject));
 				break;
 			case relationToOther.UNDERNEATH:
-				po.changeY(other.transform.position.y - getTouchingDistanceY(other.gameObject));
+				changeY(other.transform.position.y - getTouchingDistanceY(other.gameObject));
 				if (po.vel.y > 0) GetComponent<FallingObject>().startJumpFall();
 				break;
 		}
+	}
+		
+	public void changeX(float amt){
+		Vector3 pos = transform.position;
+		pos.x = amt;
+		transform.position = pos;
+	}
+	
+	public void changeY(float amt){
+		Vector3 pos = transform.position;
+		pos.y = amt;
+		transform.position = pos;
 	}
 
 	
@@ -58,7 +85,7 @@ public class CollisionDetector : MonoBehaviour {
 		//	land on the object
 		GetComponent<PhysicsObject>().land();
 		GetComponent<FallingObject>().land();
-		
+		if (infinite_jump) GetComponent<JumpingObject>().jump();
 	}
 	
 	void hitSide(Collider side){
