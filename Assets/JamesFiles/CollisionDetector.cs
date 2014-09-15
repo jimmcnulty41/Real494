@@ -56,15 +56,23 @@ public class CollisionDetector : MonoBehaviour {
 				changeY(other.transform.position.y + getTouchingDistanceY(other.gameObject));
 				break;
 			case relationToOther.TOLEFT:	
-				changeX(other.transform.position.x - getTouchingDistanceX(other.gameObject));
-				break;
 			case relationToOther.TORIGHT:
-				changeX(other.transform.position.x + getTouchingDistanceX(other.gameObject));
+				respondToSideHit(touchingObjects[other], other);
 				break;
 			case relationToOther.UNDERNEATH:
 				changeY(other.transform.position.y - getTouchingDistanceY(other.gameObject));
 				if (po.vel.y > 0) GetComponent<FallingObject>().startJumpFall();
 				break;
+		}
+	}
+
+	void respondToSideHit(relationToOther relation, Collider other){
+		OpenSideObject hasOpenSide = other.GetComponent<OpenSideObject> ();
+		if (hasOpenSide != null) return;
+		if (relation == relationToOther.TOLEFT) {
+			changeX (other.transform.position.x - getTouchingDistanceX (other.gameObject));
+		} else if (relation == relationToOther.TORIGHT) {
+			changeX(other.transform.position.x + getTouchingDistanceX(other.gameObject));
 		}
 	}
 		

@@ -7,6 +7,9 @@ using System.Collections;
 /*	The PhysicsObject Class allows objects to react to a limited
  * 	physics simulation.
  * 
+ * 	On Updates the physics object will have its position modified by its 
+ * 	velocity and its velocity modified by its acceleration (vertical only)
+ * 
  * 	While up-down movement responds to acceleration, 
  * 	side-side movement only factors velocity. 
  * 	Side-side velocity can be changed 
@@ -34,7 +37,6 @@ public class PhysicsObject : MonoBehaviour {
 		curVel.x = speed;
 		vel = curVel;
 	}
-
 	
 	//	Updates state of object so it knows it is on the ground; stops vertical movement
 	public void land(){
