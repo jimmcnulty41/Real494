@@ -9,7 +9,12 @@ public class FollowCam : MonoBehaviour {
 	public float RegionBoundaryX;
 	public float RegionBoundaryY1;
 	public float RegionBoundaryY2;
-	bool falling = false;
+	public float InitialCameraHeight1;
+	public float InitialCameraHeight2;
+
+	bool falling = false; 
+	public float CameraOffset; 
+
 	// Use this for initialization
 	void Start () {
 		
@@ -22,7 +27,8 @@ public class FollowCam : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		float FollowY; //used to check if camera should move up
-
+		float InitialCameraHeight;
+		//print (CameraOffset);
 		//have camera follow the hero on the x axis:
 		Vector3 targetPos = hero.transform.position;
 		Vector3 destination = transform.position;
@@ -30,20 +36,30 @@ public class FollowCam : MonoBehaviour {
 		transform.position = destination;
 
 		//check if the camera has crossed the hardcoded boundry, and set the Y boundry accordingly:
-		if (transform.position.x > RegionBoundaryX) { FollowY = RegionBoundaryY2; }
-		else { FollowY = RegionBoundaryY1; }
+		if (transform.position.x > RegionBoundaryX) { 
+			FollowY = RegionBoundaryY2;
+			InitialCameraHeight = InitialCameraHeight2;
+		}
+		else { 
+			FollowY = RegionBoundaryY1;
+			InitialCameraHeight = InitialCameraHeight1;
+
+		}
 
 		//check if the target destination crosses the Y boundry, and follow if so:
+		 
 		 if (targetPos.y > FollowY) {
 			Vector3 destinationY = transform.position;
-			destinationY.y = targetPos.y;
+			destinationY.y = (targetPos.y - FollowY) + InitialCameraHeight;
 			transform.position = destinationY;
 			falling = true;
 		} else if (falling == true) {
+			print(targetPos);
 			Vector3 destinationY = transform.position;
-			destinationY.y = targetPos.y;
+			destinationY.y = InitialCameraHeight;
 			transform.position = destinationY;
 			falling = false;
+
 		}
 	}
 }

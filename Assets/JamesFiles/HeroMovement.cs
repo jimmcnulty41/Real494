@@ -17,6 +17,7 @@ public class HeroMovement : MonoBehaviour {
 
 
 	public float runSpeed = 1f;
+	public bool facingLeft = false;
 
 	void Update(){
 		manageInputs();
@@ -26,9 +27,15 @@ public class HeroMovement : MonoBehaviour {
 		PhysicsObject po = GetComponent<PhysicsObject>();
 		manageJumpInput();
 
-		if (Input.GetKey(KeyCode.LeftArrow)) po.changeSideSpeed(-runSpeed);
+		if (Input.GetKey (KeyCode.LeftArrow)) {
+			po.changeSideSpeed (-runSpeed);
+			facingLeft = true;
+		}
 		if (Input.GetKeyUp(KeyCode.LeftArrow)) po.changeSideSpeed(0);
-		if (Input.GetKey(KeyCode.RightArrow)) po.changeSideSpeed(runSpeed);
+		if (Input.GetKey (KeyCode.RightArrow)) {
+			po.changeSideSpeed (runSpeed);
+			facingLeft = false;
+		}
 		if (Input.GetKeyUp(KeyCode.RightArrow)) po.changeSideSpeed(0);
 	}
 	
