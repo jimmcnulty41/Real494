@@ -32,8 +32,13 @@ public class FallingObject : MonoBehaviour {
 
 	//	When this function is triggered, the object will fall
 	public void fall(){
+
+		//	If the object is in the air, and its velocity is negative,
+		//	we're already falling. do nothing further.
 		PhysicsObject po = GetComponent<PhysicsObject>();
-		if (!po.onGround) return;
+		if (!po.onGround && GetComponent<PhysicsObject>().vel.y < 0) return;
+
+		//	Otherwise, we start falling
 		po.onGround = false;
 		falling = true;
 		GetComponent<PhysicsObject>().accel = new Vector3(0,-fallSpeed,0);
@@ -45,7 +50,7 @@ public class FallingObject : MonoBehaviour {
 		po.accel = new Vector3(0,-fallSpeed,0);
 		falling = true;
 	}
-	
+
 	public void transitionIntoFall(){
 		PhysicsObject po = GetComponent<PhysicsObject>();
 		Vector3 vel = po.vel;
