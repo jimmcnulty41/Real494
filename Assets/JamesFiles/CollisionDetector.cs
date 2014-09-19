@@ -61,7 +61,7 @@ public class CollisionDetector : MonoBehaviour {
 				break;
 			case relationToOther.UNDERNEATH:
 				changeY(other.transform.position.y - getTouchingDistanceY(other.gameObject));
-				if (po.vel.y > 0) GetComponent<FallingObject>().startJumpFall();
+				if (po.vel.y > 0) GetComponent<FallingObject>().fall();
 				break;
 		}
 	}
