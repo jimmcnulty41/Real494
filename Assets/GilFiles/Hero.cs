@@ -39,6 +39,7 @@ public class Hero : MonoBehaviour {
 	public int keysMax;
 
 	bool canThrow = true; //flag for enable/disable throw
+	bool miniJumped;
 
 	// Use this for initialization
 	void Start () {
@@ -183,6 +184,7 @@ public class Hero : MonoBehaviour {
 			} else {
 				health--;
 				healthGT.text = "Health: " + health;
+				miniJump();
 				if (health <= 0) {
 					die ();
 				}
@@ -210,6 +212,31 @@ public class Hero : MonoBehaviour {
 		}
 	}
 
+	void miniJump (){
+		miniJumped = true;
+		JumpingObject jo = GetComponent<JumpingObject> ();
+		//cut jumping object by half
+		GetComponent<JumpingObject> ().jumpVelocity = jo.jumpVelocity / 2;
+		GetComponent<JumpingObject> ().jumpHeight = jo.jumpHeight / 2;
+		//jump
+		GetComponent<JumpingObject> ().jump ();
+	}
+
+	public void landMiniJump(){
+		if (miniJumped == false) {
+			return;
+		}
+		else {
+			JumpingObject jo = GetComponent<JumpingObject> ();
+			//set it back to normal
+			GetComponent<JumpingObject> ().jumpVelocity = jo.jumpVelocity * 2;
+			GetComponent<JumpingObject> ().jumpHeight = jo.jumpHeight * 2;
+			miniJumped = false;
+		}
+	}
+
+
+
 	void kill (Collider other){
 		if (killOnJump == true) {
 			other.gameObject.GetComponent<AnimalBehavior> ().health--;
@@ -220,6 +247,7 @@ public class Hero : MonoBehaviour {
 			health--;
 			healthGT.text = "Health: " + health;
 		}
+		miniJump();
 	}
 
 	void die (){

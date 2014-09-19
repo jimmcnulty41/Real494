@@ -16,12 +16,7 @@ public class AnimalBehavior : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		if (Message != null) {
-			GameObject message = Instantiate (Message) as GameObject;
-			Vector3 pos = GUIUtility.ScreenToGUIPoint(transform.position);
-			print(pos);
-			message.transform.position = pos;
-		}
+
 	}
 	
 	// Update is called once per frame
