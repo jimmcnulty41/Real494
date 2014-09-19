@@ -39,13 +39,13 @@ public class CollisionDetector : MonoBehaviour {
 		touchingObjects.Add(other, getRelationToObject(other.gameObject));
 		if (touchingObjects[other] == relationToOther.ONTOP)
 			land (other);
-		print(touchingObjects[other] + " of " + other.name);
+		//print(touchingObjects[other] + " of " + other.name);
 		switchOnRelation(other);
 	}	
 	
 	void OnTriggerStay(Collider other){
 		GameObject gOther = other.gameObject;
-		print(touchingObjects[other] + " of " + other.name);
+		//print(touchingObjects[other] + " of " + other.name);
 		switchOnRelation(other);
 	}
 	
@@ -101,7 +101,7 @@ public class CollisionDetector : MonoBehaviour {
 	}
 	
 	void OnTriggerExit(Collider other){
-		print ("Removed " + other.name + " from touchingObjects");
+		//print ("Removed " + other.name + " from touchingObjects");
 		exitSwitchOnRelation(touchingObjects[other]);
 		touchingObjects.Remove(other);
 	}

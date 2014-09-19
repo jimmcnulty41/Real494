@@ -1,12 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum characterType {
-	nemo,
-	frog,
-	mole,
-	lizard
-};
+/*
+This script defines hero behavior and traits. It includes some of the core mechanics such as throwing candy, 
+and changing type/changing back from type.
+
+Requires: Hero is a physics object, jumping object, falling object, and animal. GUI elements should exist in the scene. Hero
+should be have the tag "Hero" & all other GameObjects should be tagged
+
+TODO: make ontriggerenter more specific of hitting the side or the top of an animal and responding accordingly, 
+check if the health has decremented <= 0 before killing it etc..
+make animal behavior to check wether or not the animal is a friend or not before transforming.
+ */
 
 public class Hero : MonoBehaviour {
 
@@ -14,6 +19,9 @@ public class Hero : MonoBehaviour {
 
 	public bool killOnJump;
 	public bool stickToWalls;
+	public bool dig;
+	public int health;
+	public string type;
 
 	public float throwingDelay; //time it takes to initiate throwing
 	public float betweenDelay; //time it takes between throws
@@ -23,36 +31,43 @@ public class Hero : MonoBehaviour {
 	//GUI text:
 	public GUIText livesGT;
 	public GUIText typeGT;
-	public GUIText lifeGT;
+	public GUIText healthGT;
 	public GUIText keysGT;
 
 	int livesCount;
 	int keysCount;
-	characterType type;
+	public int keysMax;
 
 	bool canThrow = true; //flag for enable/disable throw
 
 	// Use this for initialization
 	void Start () {
+
 		//set the variables and GUI text:
 		killOnJump = false;
 		stickToWalls = false;
 		livesCount = 3;
 		keysCount = 0;
-		type = characterType.nemo;
+		type = "Nemo";
+		health = 3;
 
 		GameObject livesGO = GameObject.Find ("lives");
 		GameObject keysGO = GameObject.Find ("keys");
 		GameObject typeGO = GameObject.Find ("type");
+		GameObject healthGO = GameObject.Find ("health");
+
 
 		livesGT = livesGO.GetComponent<GUIText> ();
-		livesGT.text = "Lives: 3";
+		livesGT.text = "Lives: " +livesCount;
 
 		keysGT = keysGO.GetComponent<GUIText> ();
-		keysGT.text = "Keys: 0";
+		keysGT.text = "Keys: " + keysCount;
 
 		typeGT = typeGO.GetComponent<GUIText> ();
-		typeGT.text = "Type: Nemo";
+		typeGT.text = "Type: " + type;
+
+		healthGT = healthGO.GetComponent<GUIText> ();
+		healthGT.text = "Health: " + health;
 	}
 	
 	// Update is called once per frame
@@ -65,7 +80,7 @@ public class Hero : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.Q)) die();
 		if (Input.GetKeyDown(KeyCode.W)) changeBack();
 		if (Input.GetKeyDown(KeyCode.C)) throwCandy();
-//		if (Input.GetKeyDown(KeyCode.R)) jump();
+//		if (Input.GetKeyDown(KeyCode.V)) jump();
 	}
 
 	IEnumerator Throw() {
@@ -101,76 +116,109 @@ public class Hero : MonoBehaviour {
 
 	void throwCandy(){
 		//only throw if it has been long enough
-		print (transform.lossyScale.y / 2);
 		if (canThrow) {
 
 			StartCoroutine (Throw ());
 		}
+	}
 
-//		GameObject candy = Instantiate (Candy) as GameObject;
-//		candy.transform.position = transform.position;
-//		/*float startingPoint = transform.position.y + GetComponent<CollisionDetector>().vertHalfWidth(this);
-//		Vector3 destination = transform.position;
-//		destination.y = startingPoint;
-//		transform.position = destination;*/
-//		candy.GetComponent<JumpingObject>().jump();
-//
-//		//delay the time between throws
-//		StartCoroutine(Wait(betweenDelay));
+	void Transform (Collider other){
 
+		//get features of the animal
+		JumpingObject animalJO = other.gameObject.GetComponent<JumpingObject> ();
+		FallingObject animalFO = other.gameObject.GetComponent<FallingObject> ();
+		Vector3 animalPOS = other.gameObject.transform.position;
+		Material animalMAT = other.gameObject.renderer.material;
+		Destroy (other.gameObject);
+		//transfer it to Nemo
+		type = other.gameObject.tag;
+		typeGT.text = "Type: " + type;
+		transform.position = animalPOS;
+		GetComponent<JumpingObject> ().jumpHeight = animalJO.jumpHeight;
+		GetComponent<JumpingObject> ().jumpVelocity = animalJO.jumpVelocity;
+		GetComponent<FallingObject> ().fallSpeed = animalFO.fallSpeed;
+		GetComponent<FallingObject> ().transitionEasing = animalFO.transitionEasing;
+		renderer.material.color = animalMAT.color;
+		//update special ability
+		if (type == "Frog") {
+			killOnJump = true;
+		} else if (type == "Lizard") {
+			stickToWalls = true;
+		} else if (type == "Mole") {
+			dig = true;
+		}
+		//can't throw while not nemo
+		canThrow = false;
+	}
 
+	void changeBack (){
+		GetComponent<JumpingObject> ().jumpHeight = 1.2f;
+		GetComponent<JumpingObject> ().jumpVelocity = 8.0f;
+		GetComponent<FallingObject> ().fallSpeed = 24.0f;
+		GetComponent<FallingObject> ().transitionEasing = 0.05f;
+		type = "Nemo";
+		typeGT.text = "Type: " + type;
+
+		renderer.material.color = Color.white;
+
+		killOnJump = false;
+		stickToWalls = false;
+		dig = false;
+		canThrow = true;
 	}
 
 	void OnTriggerEnter(Collider other){
-		if (other.gameObject.tag == "Frog") {
-			changeType (other);
-			kill (other);
+		//first, check if its an Animal - only animals have this component
+		if (other.gameObject.GetComponent<AnimalBehavior> () != null) {
+			//check if its friendly and transform if so:
+			if (other.gameObject.GetComponent<AnimalBehavior> ().friendly) {
+				Transform (other);
+				return;
+			}
+			//If not, check if you are hitting it from above by checking if hero's bottom is above the animal's top
+			float heroBottom = transform.position.y - (transform.lossyScale.y / 2);
+			float animalTop = other.gameObject.transform.position.y + (other.gameObject.transform.lossyScale.y / 2);
+			if (heroBottom >= animalTop) {
+				kill (other);		
+			} else {
+				health--;
+				healthGT.text = "Health: " + health;
+				if (health <= 0) {
+					die ();
+				}
+			}
 		}
-		else if ((other.gameObject.tag == "Key") || (other.gameObject.tag == "Life")) pickup (other);
+		//if its not an animal, check if its a gui object and interact accordingly
+		else if (other.gameObject.tag == "Life") {
+			livesCount++;
+			livesGT.text = "Lives: " + livesCount.ToString ();
+			Destroy (other.gameObject);
+		} else if (other.gameObject.tag == "Key") {
+			keysCount++;
+			keysGT.text = "Keys: " + keysCount.ToString ();
+			Destroy (other.gameObject);
+		} else if (other.gameObject.tag == "Health") {
+			if (health < 4) {
+				health++;
+			}
+			healthGT.text = "Health: " + health;
+			Destroy (other.gameObject);
+		} else if (other.gameObject.tag == "Door") {
+			if (keysCount >= keysMax){
+				Application.LoadLevel ("_Scene_0");
+			}
+		}
 	}
 
 	void kill (Collider other){
 		if (killOnJump == true) {
-			Destroy (other.gameObject);
-		}
-	}
-
-	void pickup (Collider other){
-		if (other.gameObject.tag == "Life") {
-			livesCount++;
-			livesGT.text = "Lives: " + livesCount.ToString();
-		} else if (other.gameObject.tag == "Key") {
-			keysCount++;
-			keysGT.text = "Keys: " + keysCount.ToString();
-		} else if (other.gameObject.tag == "Health") {
-			//increment the health to <= 4
-		}
-		kill (other);
-	}
-
-	void changeType (Collider other){
-		if (other.gameObject.tag == "Frog") {
-			type = characterType.frog;
-			//set other attributes here
-			typeGT.text = "Type: Frog";
-		} else if (other.gameObject.tag == "Mole") {
-			type = characterType.mole;
-			//set other attributes here
-			typeGT.text = "Type: Mole";
-		} else if (other.gameObject.tag == "Lizard") {
-			type = characterType.lizard;
-			//set other attributes here
-			typeGT.text = "Type: Lizard";
-		}
-	}
-
-	void changeBack (){
-		if (type == characterType.nemo) {
-			return;
-		} 
-		else {
-			type = characterType.nemo;
-			typeGT.text = "Type: Nemo";
+			other.gameObject.GetComponent<AnimalBehavior> ().health--;
+			if (other.gameObject.GetComponent<AnimalBehavior> ().health <= 0){
+				Destroy (other.gameObject);
+			}
+		} else {	
+			health--;
+			healthGT.text = "Health: " + health;
 		}
 	}
 

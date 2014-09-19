@@ -27,18 +27,19 @@ public class Candy : MonoBehaviour {
 	void Update () {
 	
 	}
-	bool checkValidTarget(Collider other){
-		if (other.gameObject.tag == "Frog" || other.gameObject.tag == "Mole" || other.gameObject.tag == "Lizard"
-			|| other.gameObject.tag == "Snail" || other.gameObject.tag == "Bee") {
-			return true;
-		} 
-		else {
-			return false;
-		}
-	}
+
 	void OnTriggerEnter(Collider other){
 
-		print (transform.position.x);
+		if (other.gameObject.GetComponent<AnimalBehavior> () != null) {
+			if (other.gameObject.GetComponent<AnimalBehavior>().friendable == false) {
+				other.gameObject.GetComponent<AnimalBehavior>().GetStunned();
+			}
+			else { 
+				other.gameObject.GetComponent<AnimalBehavior>().candyCount++;
+				if (other.gameObject.GetComponent<AnimalBehavior>().candyCount >= 2)
+					other.gameObject.GetComponent<AnimalBehavior>().friendly = true;
+			}
+		}
 		Destroy (gameObject);
 	}
 }
