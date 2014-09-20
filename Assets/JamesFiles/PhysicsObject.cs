@@ -36,6 +36,9 @@ public class PhysicsObject : MonoBehaviour {
 		Vector3 curVel = vel;
 		curVel.x = speed;
 		vel = curVel;
+		if (GetComponent<CollisionDetector>().onShroom){
+			GetComponent<CollisionDetector>().onShroom.modifyVel(gameObject, speed);
+		}
 	}
 	
 	//	Updates state of object so it knows it is on the ground; stops vertical movement

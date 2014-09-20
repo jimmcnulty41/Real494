@@ -20,18 +20,22 @@ public class JumpingObject : MonoBehaviour {
 	
 	public float jumpVelocity = 6;
 	public float jumpHeight = 1.2f;
+	public bool doubleJump = false;
 	Vector3 jumpBottom;
 	
 	//	Public functions to call
 	//==============================================
 	public void jump(){
 		PhysicsObject po = GetComponent<PhysicsObject>();
+//		GetComponent<CollisionDetector>().currentShroomLayer = null;
 		// No jumping in the air
-		if (!po.onGround) return;
+		GetComponent<CollisionDetector>().onShroom = null;
+		if (!po.onGround && !doubleJump) return;
 		//	Make velocity equal to the jump velocity
 		po.vel += new Vector3(0,jumpVelocity,0);
 		po.onGround = false;
-		jumpBottom = transform.position;		
+		jumpBottom = transform.position;	
+		doubleJump = false;
 	}
 	
 	//	During update

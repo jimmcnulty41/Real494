@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-enum relationToOther{
+public enum relationToOther{
 	ONTOP,
 	TOLEFT,
 	TORIGHT,
@@ -28,27 +28,36 @@ public class CollisionDetector : MonoBehaviour {
 	public float forgiveness = .3f;
 	public float sinkamt = .001f;
 	public bool infinite_jump = false;
+	public float offset = .01f;
+	public ShroomCube onShroom = null;
+
+	public bool ____________________________;
 	
-	Dictionary<Collider, relationToOther> touchingObjects 
+	public Dictionary<Collider, relationToOther> touchingObjects 
 		= new Dictionary<Collider, relationToOther>();
 		
-	//	Trigger Enter functions
+
+	//	Trigger Enter/Stay functions
 	//==========================================
 
 	void OnTriggerEnter(Collider other){
-		touchingObjects.Add(other, getRelationToObject(other.gameObject));
+		touchingObjects.Add(other, getRelationToObject(other));
 		if (touchingObjects[other] == relationToOther.ONTOP)
 			land (other);
+		if (other.GetComponent<ShroomCube>() && !onShroom)
+			onShroom = other.GetComponent<ShroomCube>();
 		//print(touchingObjects[other] + " of " + other.name);
 		switchOnRelation(other);
 	}	
+
 	
 	void OnTriggerStay(Collider other){
-		GameObject gOther = other.gameObject;
 		//print(touchingObjects[other] + " of " + other.name);
 		switchOnRelation(other);
 	}
-	
+
+
+
 	void switchOnRelation(Collider other){
 		PhysicsObject po = GetComponent<PhysicsObject>();
 		switch(touchingObjects[other]){
@@ -60,20 +69,28 @@ public class CollisionDetector : MonoBehaviour {
 				respondToSideHit(touchingObjects[other], other);
 				break;
 			case relationToOther.UNDERNEATH:
-				changeY(other.transform.position.y - getTouchingDistanceY(other.gameObject));
-				if (po.vel.y > 0) GetComponent<FallingObject>().fall();
+				respondToBottomHit(other, po);
 				break;
 		}
 	}
 
+	//	Respond to hitting sides/bottoms---------------------------------
+
 	void respondToSideHit(relationToOther relation, Collider other){
 		OpenSideObject hasOpenSide = other.GetComponent<OpenSideObject> ();
-		if (hasOpenSide != null) return;
+		if (hasOpenSide) return;
 		if (relation == relationToOther.TOLEFT) {
 			changeX (other.transform.position.x - getTouchingDistanceX (other.gameObject));
 		} else if (relation == relationToOther.TORIGHT) {
 			changeX(other.transform.position.x + getTouchingDistanceX(other.gameObject));
 		}
+	}
+
+	void respondToBottomHit(Collider other, PhysicsObject po){
+		OpenBottomObject hasOpenBottom = other.GetComponent<OpenBottomObject>();
+		if (hasOpenBottom) return;
+		changeY(other.transform.position.y - getTouchingDistanceY(other.gameObject));
+		if (po.vel.y > 0) GetComponent<FallingObject>().fall();
 	}
 		
 	public void changeX(float amt){
@@ -93,36 +110,59 @@ public class CollisionDetector : MonoBehaviour {
 		//	land on the object
 		GetComponent<PhysicsObject>().land();
 		GetComponent<FallingObject>().land();
-		if (infinite_jump) GetComponent<JumpingObject>().jump();
+//		if (landing.GetComponent<ShroomCube>()){
+//			currentShroomLayer = landing.GetComponent<ShroomCube>();
+//		} else {
+//			currentShroomLayer = null;
+//		}
+		if (!landing.GetComponent<ShroomCube>()) onShroom = null;
+		JumpingObject jo = GetComponent<JumpingObject>();
+		if (infinite_jump) jo.jump();
+		jo.doubleJump = false;
+
 	}
-	
-	void hitSide(Collider side){
-		//	Rub against side
-	}
+
+	//	OnTriggerExit Functions
+	//===================================================
 	
 	void OnTriggerExit(Collider other){
 		//print ("Removed " + other.name + " from touchingObjects");
-		exitSwitchOnRelation(touchingObjects[other]);
+		exitSwitchOnRelation(touchingObjects[other], other);
 		touchingObjects.Remove(other);
 	}
 	
-	void exitSwitchOnRelation(relationToOther relation){
+
+	void exitSwitchOnRelation(relationToOther relation, Collider other){
 		switch(relation){
-			case relationToOther.ONTOP:
-				if (!GetComponent<PhysicsObject>().onGround) return;
-				GetComponent<FallingObject>().fall();
-			break;
+		case relationToOther.ONTOP:
+			if (!GetComponent<PhysicsObject>().onGround) return;
+			else GetComponent<FallingObject>().fall();
+		break;
 		}	
 	}
-	
-	relationToOther getRelationToObject(GameObject other){
-		if (normalizedDistanceRatioY(gameObject, other) 
-							< normalizedDistanceRatioX(gameObject, other)){
-			return getVertOrientation(gameObject, other);
-		} else {
-			return getHorOrientation(gameObject, other);
-		}
+
+
+	//	General Functions for relationship between objects
+	//==========================================================
+
+	relationToOther getRelationToObject(Collider other){
+		float topDist = Mathf.Abs(collider.bounds.min.y - other.bounds.max.y);
+		float bottomDist = Mathf.Abs(collider.bounds.max.y - other.bounds.min.y);
+		float rightDist = Mathf.Abs(collider.bounds.min.x - other.bounds.max.x);
+		float leftDist = Mathf.Abs(collider.bounds.max.x - other.bounds.min.x);
+		float minDist = Mathf.Min(
+			Mathf.Min(topDist, bottomDist), Mathf.Min(leftDist, rightDist));
+		if (minDist == topDist)
+			return relationToOther.ONTOP;
+		else if (minDist == bottomDist)
+			return relationToOther.UNDERNEATH;
+		else if (minDist == rightDist)
+			return relationToOther.TORIGHT;
+		else //(minDist == leftDist)
+			return relationToOther.TOLEFT;
+
 	}
+
 
 	float normalizedDistanceRatioY(GameObject go, GameObject other){
 		float distance = go.transform.position.y - other.transform.position.y;
@@ -163,6 +203,11 @@ public class CollisionDetector : MonoBehaviour {
 	
 	//	Functions for getting boundaries
 	//=========================================
+
+	bool inBounds(Collider other){
+		return (collider.bounds.min.x > other.bounds.max.x ||
+		        collider.bounds.max.x < other.bounds.min.x);
+	}
 	
 	float getTopEdge(GameObject go){
 		return go.transform.position.y + vertHalfWidth(go);
