@@ -29,8 +29,9 @@ public class BeeSpawner : MonoBehaviour {
 		}
 
 		if (bee == null) {
-			pos = cameraPos;
-			pos.y += 3.0f;
+			GameObject hero = GameObject.Find("Hero");
+			pos = hero.transform.position;
+			pos.y += (camWidth / 4);
 			pos.x += ((camWidth / 2) - 0.5f);
 			pos.z = 0;
 			bee = Instantiate (BeePreFab) as GameObject;
@@ -39,6 +40,15 @@ public class BeeSpawner : MonoBehaviour {
 			
 		}
 
+		if (bee != null) {
+			if ((bee.transform.position.x <= (cameraPos.x - ((camWidth / 2) - 0.5f)))
+			 ||
+				(bee.transform.position.y <= (cameraPos.y - ((camHeight / 2) - 0.5f)))
+			   ) {
+				Vector3 vel = bee.GetComponent<PhysicsObject>().vel;
+				bee.GetComponent<PhysicsObject>().vel = vel * -1;
+			}
+		}
 
 	}
 }

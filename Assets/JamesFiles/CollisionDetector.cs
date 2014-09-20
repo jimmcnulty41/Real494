@@ -120,6 +120,15 @@ public class CollisionDetector : MonoBehaviour {
 		if (infinite_jump) jo.jump();
 		jo.doubleJump = false;
 
+		if (GetComponent<Hero> () != null) {
+			GetComponent<Hero> ().landMiniJump ();
+		}
+		if (infinite_jump) GetComponent<JumpingObject>().jump();
+	}
+	
+	void hitSide(Collider side){
+		//	Rub against side
+
 	}
 
 	//	OnTriggerExit Functions
