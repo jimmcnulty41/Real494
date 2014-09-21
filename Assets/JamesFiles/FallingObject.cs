@@ -18,8 +18,10 @@ using System.Collections;
 public class FallingObject : MonoBehaviour {
 
 	public float fallSpeed = 28;
-	public float transitionEasing = .1f;
+	public float setTransitionEasing = .1f;
 	public bool falling = false;
+	public bool ______________________;
+	public float transitionEasing;
 	
 	void FixedUpdate(){
 		if (!falling) return;
@@ -42,6 +44,20 @@ public class FallingObject : MonoBehaviour {
 		po.onGround = false;
 		falling = true;
 		GetComponent<PhysicsObject>().accel = new Vector3(0,-fallSpeed,0);
+		transitionEasing = setTransitionEasing;
+	}
+
+	public void instantFall(){
+		//	If the object is in the air, and its velocity is negative,
+		//	we're already falling. do nothing further.
+		PhysicsObject po = GetComponent<PhysicsObject>();
+		if (!po.onGround && GetComponent<PhysicsObject>().vel.y < 0) return;
+		
+		//	Otherwise, we start falling
+		po.onGround = false;
+		falling = true;
+		GetComponent<PhysicsObject>().accel = new Vector3(0,-fallSpeed,0);
+		transitionEasing = 1;
 	}
 
 	//	This function begins the transition into a fall from a jump

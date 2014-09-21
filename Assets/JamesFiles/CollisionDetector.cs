@@ -6,7 +6,8 @@ public enum relationToOther{
 	ONTOP,
 	TOLEFT,
 	TORIGHT,
-	UNDERNEATH
+	UNDERNEATH,
+	ONSLOPE
 }
 
 //	CollisionDetector Class
@@ -44,9 +45,12 @@ public class CollisionDetector : MonoBehaviour {
 		touchingObjects.Add(other, getRelationToObject(other));
 		if (touchingObjects[other] == relationToOther.ONTOP)
 			land (other);
-		if (other.GetComponent<ShroomCube>() && !onShroom)
+		if (touchingObjects[other] == relationToOther.ONSLOPE && !onShroom){
 			onShroom = other.GetComponent<ShroomCube>();
-		//print(touchingObjects[other] + " of " + other.name);
+			other.GetComponent<ShroomCube>().modifyPosition(gameObject);
+			land(other);
+		}
+		print(touchingObjects[other] + " of " + other.name);
 		switchOnRelation(other);
 	}	
 
@@ -56,21 +60,30 @@ public class CollisionDetector : MonoBehaviour {
 		switchOnRelation(other);
 	}
 
+	void Update(){
+		if (onShroom){
+			onShroom.modifyPosition(gameObject);
+			if (onShroom.offShroom(gameObject)) {
+				GetComponent<FallingObject>().fall();
+				onShroom = null;
+			}
+		}
+	}
 
 
 	void switchOnRelation(Collider other){
 		PhysicsObject po = GetComponent<PhysicsObject>();
 		switch(touchingObjects[other]){
 			case relationToOther.ONTOP:
-				changeY(other.transform.position.y + getTouchingDistanceY(other.gameObject));
-				break;
-			case relationToOther.TOLEFT:	
-			case relationToOther.TORIGHT:
-				respondToSideHit(touchingObjects[other], other);
-				break;
-			case relationToOther.UNDERNEATH:
-				respondToBottomHit(other, po);
-				break;
+			changeY(other.transform.position.y + getTouchingDistanceY(other.gameObject));
+			break;
+		case relationToOther.TOLEFT:	
+		case relationToOther.TORIGHT:
+			respondToSideHit(touchingObjects[other], other);
+			break;
+		case relationToOther.UNDERNEATH:
+			respondToBottomHit(other, po);
+			break;
 		}
 	}
 
@@ -90,7 +103,8 @@ public class CollisionDetector : MonoBehaviour {
 		OpenBottomObject hasOpenBottom = other.GetComponent<OpenBottomObject>();
 		if (hasOpenBottom) return;
 		changeY(other.transform.position.y - getTouchingDistanceY(other.gameObject));
-		if (po.vel.y > 0) GetComponent<FallingObject>().fall();
+		if (po.vel.y > 0)
+			GetComponent<FallingObject>().instantFall();
 	}
 		
 	public void changeX(float amt){
@@ -120,6 +134,15 @@ public class CollisionDetector : MonoBehaviour {
 		if (infinite_jump) jo.jump();
 		jo.doubleJump = false;
 
+		if (GetComponent<Hero> () != null) {
+			GetComponent<Hero> ().landMiniJump ();
+		}
+		if (infinite_jump) GetComponent<JumpingObject>().jump();
+	}
+	
+	void hitSide(Collider side){
+		//	Rub against side
+
 	}
 
 	//	OnTriggerExit Functions
@@ -137,7 +160,7 @@ public class CollisionDetector : MonoBehaviour {
 		case relationToOther.ONTOP:
 			if (!GetComponent<PhysicsObject>().onGround) return;
 			else GetComponent<FallingObject>().fall();
-		break;
+			break;
 		}	
 	}
 
@@ -152,7 +175,9 @@ public class CollisionDetector : MonoBehaviour {
 		float leftDist = Mathf.Abs(collider.bounds.max.x - other.bounds.min.x);
 		float minDist = Mathf.Min(
 			Mathf.Min(topDist, bottomDist), Mathf.Min(leftDist, rightDist));
-		if (minDist == topDist)
+		if (other.GetComponent<ShroomCube>() && (minDist != bottomDist))
+			return relationToOther.ONSLOPE;
+		else if (minDist == topDist)
 			return relationToOther.ONTOP;
 		else if (minDist == bottomDist)
 			return relationToOther.UNDERNEATH;
@@ -160,6 +185,7 @@ public class CollisionDetector : MonoBehaviour {
 			return relationToOther.TORIGHT;
 		else //(minDist == leftDist)
 			return relationToOther.TOLEFT;
+		
 
 	}
 
