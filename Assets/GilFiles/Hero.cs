@@ -25,6 +25,8 @@ public class Hero : MonoBehaviour {
 
 	public float throwingDelay; //time it takes to initiate throwing
 	public float betweenDelay; //time it takes between throws
+	public float miniJumpHeight;
+	public float miniJumpVelocity;
 
 	static public bool ______________________;
 
@@ -40,6 +42,10 @@ public class Hero : MonoBehaviour {
 
 	bool canThrow = true; //flag for enable/disable throw
 	bool miniJumped;
+
+	
+	float originalJumpHeight;
+	float originalJumpVelocity;
 
 	// Use this for initialization
 	void Start () {
@@ -69,6 +75,9 @@ public class Hero : MonoBehaviour {
 
 		healthGT = healthGO.GetComponent<GUIText> ();
 		healthGT.text = "Health: " + health;
+
+		originalJumpHeight = GetComponent<JumpingObject>().jumpHeight;
+		originalJumpVelocity = GetComponent<JumpingObject>().jumpVelocity;
 	}
 	
 	// Update is called once per frame
@@ -148,6 +157,9 @@ public class Hero : MonoBehaviour {
 		} else if (type == "Mole") {
 			dig = true;
 		}
+		//set the new original jump:
+		originalJumpHeight = GetComponent<JumpingObject>().jumpHeight;
+		originalJumpVelocity = GetComponent<JumpingObject>().jumpVelocity;
 		//can't throw while not nemo
 		canThrow = false;
 	}
@@ -214,10 +226,9 @@ public class Hero : MonoBehaviour {
 
 	void miniJump (){
 		miniJumped = true;
-		JumpingObject jo = GetComponent<JumpingObject> ();
 		//cut jumping object by half
-		GetComponent<JumpingObject> ().jumpVelocity = jo.jumpVelocity / 2;
-		GetComponent<JumpingObject> ().jumpHeight = jo.jumpHeight / 2;
+		GetComponent<JumpingObject> ().jumpVelocity = miniJumpVelocity;
+		GetComponent<JumpingObject> ().jumpHeight = miniJumpHeight;
 		//jump
 		GetComponent<JumpingObject> ().jump ();
 	}
@@ -227,10 +238,9 @@ public class Hero : MonoBehaviour {
 			return;
 		}
 		else {
-			JumpingObject jo = GetComponent<JumpingObject> ();
 			//set it back to normal
-			GetComponent<JumpingObject> ().jumpVelocity = jo.jumpVelocity * 2;
-			GetComponent<JumpingObject> ().jumpHeight = jo.jumpHeight * 2;
+			GetComponent<JumpingObject> ().jumpVelocity = originalJumpVelocity;
+			GetComponent<JumpingObject> ().jumpHeight = originalJumpHeight;
 			miniJumped = false;
 		}
 	}
