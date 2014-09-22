@@ -20,8 +20,8 @@ public class Hero : MonoBehaviour {
 	public bool killOnJump;
 	public bool stickToWalls;
 	public bool dig;
-	public int health;
-	public string type;
+	int health;
+	string type;
 
 	public float throwingDelay; //time it takes to initiate throwing
 	public float betweenDelay; //time it takes between throws
@@ -36,7 +36,7 @@ public class Hero : MonoBehaviour {
 	public GUIText healthGT;
 	public GUIText keysGT;
 
-	int livesCount;
+	public int livesCount;
 	int keysCount;
 	public int keysMax;
 
@@ -53,7 +53,7 @@ public class Hero : MonoBehaviour {
 		//set the variables and GUI text:
 		killOnJump = false;
 		stickToWalls = false;
-		livesCount = 3;
+		//livesCount = 3;
 		keysCount = 0;
 		type = "Nemo";
 		health = 3;
@@ -68,7 +68,7 @@ public class Hero : MonoBehaviour {
 		livesGT.text = "Lives: " +livesCount;
 
 		keysGT = keysGO.GetComponent<GUIText> ();
-		keysGT.text = "Keys: " + keysCount;
+		keysGT.text = "Keys: " + keysCount + "/" + keysMax;
 
 		typeGT = typeGO.GetComponent<GUIText> ();
 		typeGT.text = "Type: " + type;
@@ -209,7 +209,7 @@ public class Hero : MonoBehaviour {
 			Destroy (other.gameObject);
 		} else if (other.gameObject.tag == "Key") {
 			keysCount++;
-			keysGT.text = "Keys: " + keysCount.ToString ();
+			keysGT.text = "Keys: " + keysCount + "/" + keysMax;
 			Destroy (other.gameObject);
 		} else if (other.gameObject.tag == "Health") {
 			if (health < 4) {
@@ -256,6 +256,9 @@ public class Hero : MonoBehaviour {
 		} else {	
 			health--;
 			healthGT.text = "Health: " + health;
+			if (health <= 0) {
+				die ();
+			}
 		}
 		miniJump();
 	}

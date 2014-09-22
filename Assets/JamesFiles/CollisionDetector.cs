@@ -108,18 +108,20 @@ public class CollisionDetector : MonoBehaviour {
 	
 	void land(Collider landing){
 		//	land on the object
-		GetComponent<PhysicsObject>().land();
-		GetComponent<FallingObject>().land();
+		if (GetComponent<PhysicsObject>() != null) GetComponent<PhysicsObject>().land();
+		if (GetComponent<FallingObject>() != null) GetComponent<FallingObject>().land();
 //		if (landing.GetComponent<ShroomCube>()){
 //			currentShroomLayer = landing.GetComponent<ShroomCube>();
 //		} else {
 //			currentShroomLayer = null;
 //		}
 		if (!landing.GetComponent<ShroomCube>()) onShroom = null;
-		JumpingObject jo = GetComponent<JumpingObject>();
-		if (infinite_jump) jo.jump();
-		jo.doubleJump = false;
-
+		if (GetComponent<JumpingObject> () != null) {
+			JumpingObject jo = GetComponent<JumpingObject> ();
+			if (infinite_jump)
+				jo.jump ();
+			jo.doubleJump = false;
+		}
 		if (GetComponent<Hero> () != null) {
 			GetComponent<Hero> ().landMiniJump ();
 		}
@@ -154,7 +156,7 @@ public class CollisionDetector : MonoBehaviour {
 	//	General Functions for relationship between objects
 	//==========================================================
 
-	relationToOther getRelationToObject(Collider other){
+	public relationToOther getRelationToObject(Collider other){
 		float topDist = Mathf.Abs(collider.bounds.min.y - other.bounds.max.y);
 		float bottomDist = Mathf.Abs(collider.bounds.max.y - other.bounds.min.y);
 		float rightDist = Mathf.Abs(collider.bounds.min.x - other.bounds.max.x);

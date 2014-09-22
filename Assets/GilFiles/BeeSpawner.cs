@@ -33,22 +33,22 @@ public class BeeSpawner : MonoBehaviour {
 			pos = hero.transform.position;
 			pos.y += (camWidth / 4);
 			pos.x += ((camWidth / 2) - 0.5f);
-			pos.z = 0;
+			pos.z = -0.2f;
 			bee = Instantiate (BeePreFab) as GameObject;
 
 			bee.transform.position = pos;
 			
 		}
 
-		if (bee != null) {
-			if ((bee.transform.position.x <= (cameraPos.x - ((camWidth / 2) - 0.5f)))
+		/*if (bee != null) {
+			if ((bee.transform.position.x <= (cameraPos.x - ((camWidth / 2) - 1f)))
 			 ||
-				(bee.transform.position.y <= (cameraPos.y - ((camHeight / 2) - 0.5f)))
+				(bee.transform.position.y <= (cameraPos.y - ((camHeight / 2) - 1f)))
 			   ) {
 				Vector3 vel = bee.GetComponent<PhysicsObject>().vel;
 				bee.GetComponent<PhysicsObject>().vel = vel * -1;
 			}
-		}
+		}*/
 
 	}
 }

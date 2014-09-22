@@ -12,4 +12,19 @@ public class SnailMovement : MonoBehaviour {
 	void Update () {
 	
 	}
+
+	void OnTriggerEnter(Collider other) {
+		if (other.gameObject.tag == "Hero") {
+			return;
+		}
+
+		relationToOther relation = GetComponent<CollisionDetector> ().getRelationToObject (other);
+		if ((relation == relationToOther.TOLEFT)|| (relation == relationToOther.TORIGHT)) {
+			if (other.gameObject.GetComponent<OpenSideObject>() != null){
+				return;
+			}
+			Vector3 vel = GetComponent<PhysicsObject> ().vel;
+			GetComponent<PhysicsObject> ().vel = vel * -1;
+		}
+	}
 }

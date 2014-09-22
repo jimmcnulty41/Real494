@@ -30,9 +30,9 @@ public class AnimalBehavior : MonoBehaviour {
 		float camHeight = 2.0f * Camera.main.orthographicSize;
 		float camWidth = camHeight * Camera.main.aspect;
 		if (//above or below camera:
-			pos.y > (cameraPos.y + (camHeight / 2)) || pos.y < (cameraPos.y - (camHeight / 2))
+			pos.y > (cameraPos.y + (camHeight / 2) + 2) || pos.y < (cameraPos.y - (camHeight / 2) - 2)
 			//left or right of camera:
-			|| pos.x > (cameraPos.x + (camWidth / 2)) || pos.x < (cameraPos.x - (camWidth / 2))
+			|| pos.x > (cameraPos.x + (camWidth / 2) + 2) || pos.x < (cameraPos.x - (camWidth / 2) - 2)
 		    ) {
 			Destroy (this.gameObject);
 		}
