@@ -275,8 +275,12 @@ public class Hero : MonoBehaviour {
 		}
 	}
 
+	int HeroLayer = 11;
+	int ImmuneLayer = 13;
+
 	IEnumerator Immune() {
 		immune = true;
+		gameObject.layer = ImmuneLayer;
 		Color color = renderer.material.color;
 		renderer.material.color = Color.red;
 		yield return new WaitForSeconds(0.25f);
@@ -293,6 +297,7 @@ public class Hero : MonoBehaviour {
 		renderer.material.color = Color.red;
 		yield return new WaitForSeconds(0.25f);
 		renderer.material.color = color;
+		gameObject.layer = HeroLayer;
 		immune = false;
 
 	}
