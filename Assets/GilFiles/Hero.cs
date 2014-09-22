@@ -41,6 +41,7 @@ public class Hero : MonoBehaviour {
 	public int keysMax;
 
 	bool canThrow = true; //flag for enable/disable throw
+	public bool immune = false;
 	bool miniJumped;
 
 	
@@ -87,9 +88,8 @@ public class Hero : MonoBehaviour {
 
 	void manageInputs(){
 
-		if (Input.GetKeyDown(KeyCode.Q)) die();
-		if (Input.GetKeyDown(KeyCode.W)) changeBack();
-		if (Input.GetKeyDown(KeyCode.C)) throwCandy();
+		if (Input.GetKeyDown(KeyCode.RightShift)) changeBack();
+		if (Input.GetKeyDown(KeyCode.Z)) throwCandy();
 //		if (Input.GetKeyDown(KeyCode.V)) jump();
 	}
 
@@ -194,12 +194,14 @@ public class Hero : MonoBehaviour {
 			if (heroBottom >= animalTop) {
 				kill (other);		
 			} else {
-				health--;
-				healthGT.text = "Health: " + health;
+//				health--;
+//				healthGT.text = "Health: " + health;
+//				miniJump();
+//				if (health <= 0) {
+//					die ();
+//				}
+				takeDamage();
 				miniJump();
-				if (health <= 0) {
-					die ();
-				}
 			}
 		}
 		//if its not an animal, check if its a gui object and interact accordingly
@@ -254,11 +256,12 @@ public class Hero : MonoBehaviour {
 				Destroy (other.gameObject);
 			}
 		} else {	
-			health--;
-			healthGT.text = "Health: " + health;
-			if (health <= 0) {
-				die ();
-			}
+//			health--;
+//			healthGT.text = "Health: " + health;
+//			if (health <= 0) {
+//				die ();
+//			}
+			takeDamage ();
 		}
 		miniJump();
 	}
@@ -270,5 +273,41 @@ public class Hero : MonoBehaviour {
 			//go to game over scene
 			Application.LoadLevel ("_Scene_0");
 		}
+	}
+
+	IEnumerator Immune() {
+		immune = true;
+		Color color = renderer.material.color;
+		renderer.material.color = Color.red;
+		yield return new WaitForSeconds(0.25f);
+		renderer.material.color = color;
+		yield return new WaitForSeconds(0.25f);
+		renderer.material.color = Color.red;
+		yield return new WaitForSeconds(0.25f);
+		renderer.material.color = color;
+		yield return new WaitForSeconds(0.25f);
+		renderer.material.color = Color.red;
+		yield return new WaitForSeconds(0.25f);
+		renderer.material.color = color;
+		yield return new WaitForSeconds(0.25f);
+		renderer.material.color = Color.red;
+		yield return new WaitForSeconds(0.25f);
+		renderer.material.color = color;
+		immune = false;
+
+	}
+
+	void takeDamage (){
+		if (immune == true) {
+			return;
+		}
+
+		health--;
+		healthGT.text = "Health: " + health;
+		if (health <= 0) {
+			die ();
+		}
+
+		StartCoroutine (Immune ());
 	}
 }

@@ -14,7 +14,7 @@ public class SnailMovement : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if (other.gameObject.tag == "Hero") {
+		if (other.gameObject.tag == "Hero" || other.gameObject.tag == "Candy") {
 			return;
 		}
 

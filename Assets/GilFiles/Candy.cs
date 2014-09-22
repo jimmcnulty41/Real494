@@ -40,6 +40,11 @@ public class Candy : MonoBehaviour {
 					other.gameObject.GetComponent<AnimalBehavior>().friendly = true;
 			}
 		}
-		Destroy (gameObject);
+		//if (other.gameObject.GetComponent<OpenSideObject> () == null) {
+	//	if (other.GetComponent<CollisionDetector> ().getRelationToObject (other) == relationToOther.UNDERNEATH
+	//	    && other.GetComponent<OpenBottomObject>())
+	//		return;
+			Destroy (gameObject);
+		
 	}
 }
