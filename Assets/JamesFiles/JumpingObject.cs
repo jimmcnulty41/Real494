@@ -23,6 +23,8 @@ public class JumpingObject : MonoBehaviour {
 	public float wallJumpHeight = .1f;
 	public Vector3 wallJumpVel;
 	public bool doubleJump = false;
+	public float forgiveness = .1f;
+	public float delay = .1f;
 	public bool __________________________;
 	Vector3 jumpBottom;
 	public bool wallJumpVelocityActive = false;
@@ -35,9 +37,9 @@ public class JumpingObject : MonoBehaviour {
 	//==============================================
 	public void jump(){
 		PhysicsObject po = GetComponent<PhysicsObject>();
-//		GetComponent<CollisionDetector>().currentShroomLayer = null;
 		// No jumping in the air
 		if (!po.onGround && !doubleJump) return;
+		print("A Jump");
 		//	Determine the jump Velocity
 		Vector3 jumpVelocityVec = Vector3.zero;
 		SticksToWalls stw = GetComponent<SticksToWalls>();
@@ -51,13 +53,24 @@ public class JumpingObject : MonoBehaviour {
 		jumpBottom = transform.position;	
 		doubleJump = false;
 	}
-	
+
+	IEnumerator allowSpeedAfterDelay(){
+		yield return new WaitForSeconds(delay);
+		GetComponent<PhysicsObject>().enableSpeedChange = true;
+	}
+
 	Vector3 jumpFromWall(){
 		SticksToWalls stw = GetComponent<SticksToWalls>();
-		Vector3 pos = transform.position;
 		Vector3 jumpVelocityVec = wallJumpVel;
+		float changeFactor = 1;
 		if (stw.stickingToLeftSideOfObject)
-			jumpVelocityVec.x *= -1;
+			changeFactor *= -1;
+		jumpVelocityVec.x *= changeFactor;
+		GetComponent<PhysicsObject>().enableSpeedChange = false;
+		StartCoroutine(allowSpeedAfterDelay());
+//		Vector3 pos = transform.position;
+//		pos.x += changeFactor * forgiveness;
+//		transform.position = pos;
 		wallJumpVelocityActive = true;
 		activeJumpHeight = wallJumpHeight;
 		stw.onWall = false;

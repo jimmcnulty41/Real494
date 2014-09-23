@@ -30,6 +30,7 @@ public class PhysicsObject : MonoBehaviour {
 	public float killEasing = .5f;
 	public bool ___________________;
 	public bool killHorVelocity = false;
+	public bool enableSpeedChange = true;
 	
 	//	Public functions
 	//=============================================
@@ -38,8 +39,14 @@ public class PhysicsObject : MonoBehaviour {
 	//-----------------------------------------------------
 	public void changeSideSpeed(float speed){
 		//	Nice big special case for wall sticking
-		if (GetComponent<SticksToWalls>() && GetComponent<SticksToWalls>().onWall)
-			speed = 0;
+
+		if (!enableSpeedChange && (Mathf.Sign(speed) != Mathf.Sign(vel.x)))
+			speed = vel.x;
+		if (killHorVelocity && (Mathf.Sign(speed) == Mathf.Sign(vel.x)))
+			killHorVelocity = false;
+//		if (killHorVelocity &&
+//			Mathf.Sign(speed) != Mathf.Sign(vel.x) && 
+//			vel.x != 0) speed = vel.x;
 		Vector3 curVel = vel;
 		curVel.x = speed;
 		vel = curVel;
@@ -55,6 +62,7 @@ public class PhysicsObject : MonoBehaviour {
 	//------------------------------------------
 	public void land(){
 		onGround = true;
+		changeSideSpeed(0);
 		negateVertAcceleration();
 	}
 	
@@ -83,7 +91,7 @@ public class PhysicsObject : MonoBehaviour {
 	
 	void manageSideMovement(){
 		if (killHorVelocity) vel.x = Mathf.Lerp(vel.x, 0, killEasing); 
-		if (Mathf.Abs(vel.x) < .001f)) killHorVelocity = false;
+		if (Mathf.Abs(vel.x) < .001f) killHorVelocity = false;
 		Vector3 pos = transform.position;
 		pos.x += vel.x * Time.deltaTime;
 		transform.position = pos;

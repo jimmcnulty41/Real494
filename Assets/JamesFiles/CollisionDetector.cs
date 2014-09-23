@@ -57,6 +57,13 @@ public class CollisionDetector : MonoBehaviour {
 	
 	void OnTriggerStay(Collider other){
 		//print(touchingObjects[other] + " of " + other.name);
+		if (other.GetComponent<OpenSideObject>() && 
+			    touchingObjects[other] == relationToOther.TOLEFT ||
+			    touchingObjects[other] == relationToOther.TORIGHT){
+			relationToOther newRel = getRelationToObject(other);
+			if (newRel == relationToOther.TOLEFT || newRel == relationToOther.TORIGHT)
+				touchingObjects[other] = newRel;
+		}
 		switchOnRelation(other);
 	}
 
@@ -75,6 +82,7 @@ public class CollisionDetector : MonoBehaviour {
 		PhysicsObject po = GetComponent<PhysicsObject>();
 		switch(touchingObjects[other]){
 			case relationToOther.ONTOP:
+			if (po.killHorVelocity) po.killHorVelocity = false;
 			changeY(other.transform.position.y + getTouchingDistanceY(other.gameObject));
 			break;
 		case relationToOther.TOLEFT:	
@@ -143,14 +151,26 @@ public class CollisionDetector : MonoBehaviour {
 	void stickToEdge(relationToOther relation, Collider other){
 		PhysicsObject po = GetComponent<PhysicsObject>();
 		po.negateVertAcceleration();
+		po.enableSpeedChange = true;
+		po.changeSideSpeed(0);
 		//	Update the sticks to walls object
 		SticksToWalls stw = GetComponent<SticksToWalls>();
 		stw.onWall = true;
 		if (relation == relationToOther.TOLEFT) stw.stickingToLeftSideOfObject = true;
 		else stw.stickingToLeftSideOfObject = false;
 		//	Move to the edge of the wall
-		moveToWallEdge(relation, other);
+		stickToWallEdge(relation, other);
 	}
+
+	void stickToWallEdge(relationToOther relation, Collider other){
+		if (relation == relationToOther.TOLEFT) {
+			changeX (other.transform.position.x - (collider.bounds.extents.y + other.bounds.extents.x));
+		} else if (relation == relationToOther.TORIGHT) {
+			changeX(other.transform.position.x + (collider.bounds.extents.y + other.bounds.extents.x));
+		}
+	}
+	//	END WALL STICKING FUNCTIONS
+
 
 	void moveToWallEdge(relationToOther relation, Collider other){
 		if (relation == relationToOther.TOLEFT) {
