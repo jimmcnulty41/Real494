@@ -25,7 +25,7 @@ public class JumpingObject : MonoBehaviour {
 	public bool doubleJump = false;
 	public bool __________________________;
 	Vector3 jumpBottom;
-	bool wallJumpVelocityActive = false;
+	public bool wallJumpVelocityActive = false;
 	float activeJumpHeight;
 
 	void Awake(){ activeJumpHeight = jumpHeight; }
@@ -54,14 +54,14 @@ public class JumpingObject : MonoBehaviour {
 	
 	Vector3 jumpFromWall(){
 		SticksToWalls stw = GetComponent<SticksToWalls>();
-		stw.onWall = false;
-		stw.stickingToLeftSideOfObject = false;
 		Vector3 pos = transform.position;
 		Vector3 jumpVelocityVec = wallJumpVel;
 		if (stw.stickingToLeftSideOfObject)
 			jumpVelocityVec.x *= -1;
 		wallJumpVelocityActive = true;
 		activeJumpHeight = wallJumpHeight;
+		stw.onWall = false;
+		stw.stickingToLeftSideOfObject = false;
 		return jumpVelocityVec;
 	}
 	

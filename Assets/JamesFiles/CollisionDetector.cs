@@ -37,9 +37,9 @@ public class CollisionDetector : MonoBehaviour {
 	public Dictionary<Collider, relationToOther> touchingObjects 
 		= new Dictionary<Collider, relationToOther>();
 		
-
+	//========================================================================
 	//	Trigger Enter/Stay functions
-	//==========================================
+	//========================================================================
 
 	void OnTriggerEnter(Collider other){
 		touchingObjects.Add(other, getRelationToObject(other));
@@ -90,7 +90,7 @@ public class CollisionDetector : MonoBehaviour {
 	//	Respond to hitting sides/bottoms---------------------------------
 
 	void respondToSideHit(relationToOther relation, Collider other){
-		//	Handle sticking to walls before we check for open sides
+		//	Handle sticking to walls if we should, otherwise, don't
 		if (manageWallSticking(relation, other)) return;
 		//	If it has open sides, we go through them, so we don't adjust the position,
 		//	unless we're sticking to the wall, in which case we do
@@ -106,21 +106,50 @@ public class CollisionDetector : MonoBehaviour {
 		SticksToWalls stw = GetComponent<SticksToWalls>();
 		if (!stw) return false;
 		if (po.onGround) return false;
-		if (relation == relationToOther.TOLEFT &&
-		    (collider.bounds.max.x > other.bounds.min.x ||
-		    po.vel.x < 0)) return false;
-		if (relation == relationToOther.TORIGHT &&
-		 	po.vel.x > 0) return false;
+		// Possible rotation solution -- however, needs to calculate touching distance differently
+		//transform.rotation = Quaternion.Euler(0,0,90);
+		if (checkAlreadyInBlock(relation, other)) return false;
+		if (!checkCorrectVelocity(relation, other)) return false;
 		//	If this is the case, we're in the air, we haven't already crossed the plane
 		//	and we're headed in the direction of the wall. 
+		stickToEdge(relation, other);
+		return true;
+	}
+
+	//	Returns true if we have already crossed the plane of a block
+	bool checkAlreadyInBlock(relationToOther relation, Collider other){
+		if (collider.bounds.max.x > other.bounds.min.x + forgiveness &&
+		    collider.bounds.min.x < other.bounds.min.x) return true;
+		if (collider.bounds.min.x < other.bounds.max.x - forgiveness &&
+		    collider.bounds.max.x > other.bounds.max.x) return true;
+		if (collider.bounds.max.x < other.bounds.max.x &&
+		    collider.bounds.min.x > other.bounds.min.x) return true;
+		return false;
+	}
+
+	
+	//	Returns true if the velocity is correct for sticking to walls 
+	//	i.e. the hero is jumping toward the wall
+	bool checkCorrectVelocity(relationToOther relation, Collider other){
+		PhysicsObject po = GetComponent<PhysicsObject>();
+		if (relation == relationToOther.TOLEFT &&
+		    po.vel.x <= 0) return false;
+		if (relation == relationToOther.TORIGHT &&
+		    po.vel.x >= 0) return false;
+		return true;
+	}
+
+
+	void stickToEdge(relationToOther relation, Collider other){
+		PhysicsObject po = GetComponent<PhysicsObject>();
 		po.negateVertAcceleration();
 		//	Update the sticks to walls object
+		SticksToWalls stw = GetComponent<SticksToWalls>();
 		stw.onWall = true;
 		if (relation == relationToOther.TOLEFT) stw.stickingToLeftSideOfObject = true;
 		else stw.stickingToLeftSideOfObject = false;
 		//	Move to the edge of the wall
 		moveToWallEdge(relation, other);
-		return true;
 	}
 
 	void moveToWallEdge(relationToOther relation, Collider other){
@@ -180,8 +209,9 @@ public class CollisionDetector : MonoBehaviour {
 
 	}
 
+	//=====================================================================
 	//	OnTriggerExit Functions
-	//===================================================
+	//=====================================================================
 	
 	void OnTriggerExit(Collider other){
 		//print ("Removed " + other.name + " from touchingObjects");

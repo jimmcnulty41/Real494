@@ -83,7 +83,7 @@ public class PhysicsObject : MonoBehaviour {
 	
 	void manageSideMovement(){
 		if (killHorVelocity) vel.x = Mathf.Lerp(vel.x, 0, killEasing); 
-		if (vel.x < .001f) killHorVelocity = false;
+		if (Mathf.Abs(vel.x) < .001f)) killHorVelocity = false;
 		Vector3 pos = transform.position;
 		pos.x += vel.x * Time.deltaTime;
 		transform.position = pos;
