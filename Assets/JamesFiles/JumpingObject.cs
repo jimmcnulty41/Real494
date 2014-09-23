@@ -20,11 +20,15 @@ public class JumpingObject : MonoBehaviour {
 	
 	public float jumpVelocity = 6;
 	public float jumpHeight = 1.2f;
-//	public float detachAmt = .01f;
+	public float wallJumpHeight = .1f;
 	public Vector3 wallJumpVel;
 	public bool doubleJump = false;
 	public bool __________________________;
 	Vector3 jumpBottom;
+	bool wallJumpVelocityActive = false;
+	float activeJumpHeight;
+
+	void Awake(){ activeJumpHeight = jumpHeight; }
 	
 
 	//	Public functions to call
@@ -53,14 +57,11 @@ public class JumpingObject : MonoBehaviour {
 		stw.onWall = false;
 		stw.stickingToLeftSideOfObject = false;
 		Vector3 pos = transform.position;
-//		float detAmt = detachAmt;
 		Vector3 jumpVelocityVec = wallJumpVel;
-		if (stw.stickingToLeftSideOfObject){
+		if (stw.stickingToLeftSideOfObject)
 			jumpVelocityVec.x *= -1;
-//			detAmt *= -1;
-		}
-//		pos.x += detAmt;
-//		transform.position = pos;
+		wallJumpVelocityActive = true;
+		activeJumpHeight = wallJumpHeight;
 		return jumpVelocityVec;
 	}
 	
@@ -73,12 +74,20 @@ public class JumpingObject : MonoBehaviour {
 	}
 	
 	void managePhysics(){
-		if (atJumpTop()) GetComponent<FallingObject>().startJumpFall();
+		FallingObject fo = GetComponent<FallingObject>();
+		if (atJumpTop()){
+			fo.startJumpFall();
+			if (wallJumpVelocityActive){
+				GetComponent<PhysicsObject>().killHorVelocity = true;
+				activeJumpHeight = jumpHeight;
+				wallJumpVelocityActive = false;
+			}
+		}
 	}	
 	
 	bool atJumpTop(){
 		if (GetComponent<FallingObject>().falling) return false;
-		return (transform.position.y - jumpBottom.y >= jumpHeight);
+		return (transform.position.y - jumpBottom.y >= activeJumpHeight);
 	}
 
 

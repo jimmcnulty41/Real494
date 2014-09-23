@@ -27,8 +27,9 @@ public class PhysicsObject : MonoBehaviour {
 	public Vector3 vel = Vector3.zero;
 	public bool immovable;
 	public bool onGround;
-	
+	public float killEasing = .5f;
 	public bool ___________________;
+	public bool killHorVelocity = false;
 	
 	//	Public functions
 	//=============================================
@@ -44,8 +45,10 @@ public class PhysicsObject : MonoBehaviour {
 		vel = curVel;
 	}
 
-	void manageSideSpeedWallMovement(){
-
+	public void changeVertSpeed(float speed){
+		Vector3 curVel = vel;
+		curVel.y = speed;
+		vel = curVel;
 	}
 	
 	//	Updates state of object so it knows it is on the ground; stops vertical movement
@@ -63,6 +66,8 @@ public class PhysicsObject : MonoBehaviour {
 		curVel.y = 0;
 		vel = curVel;
 	}
+
+
 		
 		
 	//	Update
@@ -70,11 +75,15 @@ public class PhysicsObject : MonoBehaviour {
 	void FixedUpdate(){
 		if (immovable) return;
 		manageSideMovement();
-		if (onGround && !GetComponent<CollisionDetector>().onShroom) return;
+		SticksToWalls stw = GetComponent<SticksToWalls>();
+		if (onGround && !GetComponent<CollisionDetector>().onShroom 
+		    && !stw && !stw.onWall) return;
 		manageUpDownMovement();
 	}
 	
 	void manageSideMovement(){
+		if (killHorVelocity) vel.x = Mathf.Lerp(vel.x, 0, killEasing); 
+		if (vel.x < .001f) killHorVelocity = false;
 		Vector3 pos = transform.position;
 		pos.x += vel.x * Time.deltaTime;
 		transform.position = pos;

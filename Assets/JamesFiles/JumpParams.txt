@@ -12,3 +12,5 @@ Frog Jump:
 	Jump Height : 2.3
 	Fall Speed: 24
 	Transition Easing: .05
+	
+Lizard Speed: 3

@@ -37,6 +37,22 @@ public class HeroMovement : MonoBehaviour {
 			facingLeft = false;
 		}
 		if (Input.GetKeyUp(KeyCode.RightArrow)) po.changeSideSpeed(0);
+
+		//	Handle up down movement if we're on a wall
+		SticksToWalls stw = GetComponent<SticksToWalls>();
+		if (!(stw && stw.onWall)) return;
+		if (Input.GetKey(KeyCode.UpArrow)){
+			po.changeVertSpeed(runSpeed);
+		}
+		if (Input.GetKey(KeyCode.DownArrow)){
+			po.changeVertSpeed(-runSpeed);
+		}
+		if (Input.GetKeyUp(KeyCode.DownArrow)){
+			po.changeVertSpeed(0);
+		}
+		if (Input.GetKeyUp(KeyCode.UpArrow)){
+			po.changeVertSpeed(0);
+		}
 	}
 	
 	void manageJumpInput(){
