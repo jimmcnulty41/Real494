@@ -32,19 +32,30 @@ public class PhysicsObject : MonoBehaviour {
 	
 	//	Public functions
 	//=============================================
+
+	//	Changes the x velocity of the object to speed
+	//-----------------------------------------------------
 	public void changeSideSpeed(float speed){
+		//	Nice big special case for wall sticking
+		if (GetComponent<SticksToWalls>() && GetComponent<SticksToWalls>().onWall)
+			speed = 0;
 		Vector3 curVel = vel;
 		curVel.x = speed;
 		vel = curVel;
 	}
+
+	void manageSideSpeedWallMovement(){
+
+	}
 	
 	//	Updates state of object so it knows it is on the ground; stops vertical movement
+	//------------------------------------------
 	public void land(){
 		onGround = true;
 		negateVertAcceleration();
 	}
 	
-	void negateVertAcceleration(){
+	public void negateVertAcceleration(){
 		Vector3 curAccel = accel;
 		curAccel.y = 0;
 		accel = curAccel;
