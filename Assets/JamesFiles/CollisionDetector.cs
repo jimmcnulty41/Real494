@@ -120,6 +120,7 @@ public class CollisionDetector : MonoBehaviour {
 		if (!checkCorrectVelocity(relation, other)) return false;
 		//	If this is the case, we're in the air, we haven't already crossed the plane
 		//	and we're headed in the direction of the wall. 
+		print("sticking to edge");
 		stickToEdge(relation, other);
 		return true;
 	}
@@ -150,7 +151,7 @@ public class CollisionDetector : MonoBehaviour {
 
 	void stickToEdge(relationToOther relation, Collider other){
 		PhysicsObject po = GetComponent<PhysicsObject>();
-		po.negateVertAcceleration();
+		po.negateVertMovement();
 		po.enableSpeedChange = true;
 		po.changeSideSpeed(0);
 		//	Update the sticks to walls object
@@ -164,9 +165,9 @@ public class CollisionDetector : MonoBehaviour {
 
 	void stickToWallEdge(relationToOther relation, Collider other){
 		if (relation == relationToOther.TOLEFT) {
-			changeX (other.transform.position.x - (collider.bounds.extents.y + other.bounds.extents.x));
+			changeX (other.transform.position.x - (collider.bounds.extents.x + other.bounds.extents.x));
 		} else if (relation == relationToOther.TORIGHT) {
-			changeX(other.transform.position.x + (collider.bounds.extents.y + other.bounds.extents.x));
+			changeX(other.transform.position.x + (collider.bounds.extents.x + other.bounds.extents.x));
 		}
 	}
 	//	END WALL STICKING FUNCTIONS

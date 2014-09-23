@@ -18,6 +18,8 @@ public class SticksToWalls : MonoBehaviour {
 
 	void FixedUpdate(){
 		if (onWall){ 
+			PhysicsObject po = GetComponent<PhysicsObject>();
+			po.changeSideSpeed(0);
 			transform.localScale = onWallShape;
 		} else {
 			transform.localScale = normalShape;

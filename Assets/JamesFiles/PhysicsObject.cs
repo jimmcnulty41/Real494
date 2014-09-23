@@ -39,7 +39,6 @@ public class PhysicsObject : MonoBehaviour {
 	//-----------------------------------------------------
 	public void changeSideSpeed(float speed){
 		//	Nice big special case for wall sticking
-
 		if (!enableSpeedChange && (Mathf.Sign(speed) != Mathf.Sign(vel.x)))
 			speed = vel.x;
 		if (killHorVelocity && (Mathf.Sign(speed) == Mathf.Sign(vel.x)))
@@ -63,10 +62,16 @@ public class PhysicsObject : MonoBehaviour {
 	public void land(){
 		onGround = true;
 		changeSideSpeed(0);
-		negateVertAcceleration();
+		negateVertMovement();
 	}
 	
 	public void negateVertAcceleration(){
+		Vector3 curAccel = accel;
+		curAccel.y = 0;
+		accel = curAccel;
+	}
+
+	public void negateVertMovement(){
 		Vector3 curAccel = accel;
 		curAccel.y = 0;
 		accel = curAccel;

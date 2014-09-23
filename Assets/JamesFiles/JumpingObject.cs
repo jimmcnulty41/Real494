@@ -41,16 +41,23 @@ public class JumpingObject : MonoBehaviour {
 		SticksToWalls stw = GetComponent<SticksToWalls>();
 		if (!po.onGround && !doubleJump && (!stw || !stw.onWall)) return;
 		//	Determine the jump Velocity
+		setJumpVelocity();
+		//	Update information about grounding
+		po.onGround = false;
+		GetComponent<CollisionDetector>().onShroom = null;
+		stw.onWall = false;
+		//	Set up end of jump
+		jumpBottom = transform.position;	
+		doubleJump = false;
+	}
+
+	void setJumpVelocity(){
+		PhysicsObject po = GetComponent<PhysicsObject>();
+		SticksToWalls stw = GetComponent<SticksToWalls>();
 		Vector3 jumpVelocityVec = Vector3.zero;
 		if (stw && stw.onWall) jumpVelocityVec = jumpFromWall();
 		else jumpVelocityVec = new Vector3(0,jumpVelocity,0);
 		po.vel = jumpVelocityVec;
-		//	Update information about grounding
-		po.onGround = false;
-		GetComponent<CollisionDetector>().onShroom = null;
-		//	Set up end of jump
-		jumpBottom = transform.position;	
-		doubleJump = false;
 	}
 
 	IEnumerator allowSpeedAfterDelay(){
@@ -63,7 +70,10 @@ public class JumpingObject : MonoBehaviour {
 	Vector3 jumpFromWall(){
 		Vector3 jumpVelocityVec = wallJumpVel;
 		SticksToWalls stw = GetComponent<SticksToWalls>();
+		if (stw.stickingToLeftSideOfObject)
+			jumpVelocityVec.x *= -1;
 
+		return jumpVelocityVec;
 //		SticksToWalls stw = GetComponent<SticksToWalls>();
 //		Vector3 jumpVelocityVec = wallJumpVel;
 //		float changeFactor = 1;
@@ -80,10 +90,6 @@ public class JumpingObject : MonoBehaviour {
 //		stw.onWall = false;
 //		stw.stickingToLeftSideOfObject = false;
 //		return jumpVelocityVec;
-	}
-
-	void reverseJumpDirection(){
-
 	}
 	
 	//	During update
