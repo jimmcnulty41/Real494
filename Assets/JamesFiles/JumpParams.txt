@@ -16,4 +16,8 @@ Frog Jump:
 Lizard Speed: 3
 Lizard Wall Jump Info:
 	Std. Jump
+	Wall JumpVel: x, 3; y, 2
+	WallJumpheight: .1
+	Delay: .2
+	Kill Easing: .13
 	

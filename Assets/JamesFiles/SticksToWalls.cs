@@ -5,8 +5,9 @@ public class SticksToWalls : MonoBehaviour {
 
 	public bool onWall;
 	public bool stickingToLeftSideOfObject;
+	public bool ___________________;
 	Vector3 normalShape;
-	Vector3 onWallShape;
+	public Vector3 onWallShape;
 
 	void Awake(){
 		normalShape = transform.localScale;

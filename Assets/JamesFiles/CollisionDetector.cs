@@ -102,8 +102,8 @@ public class CollisionDetector : MonoBehaviour {
 		if (manageWallSticking(relation, other)) return;
 		//	If it has open sides, we go through them, so we don't adjust the position,
 		//	unless we're sticking to the wall, in which case we do
-		OpenSideObject hasOpenSide = other.GetComponent<OpenSideObject> ();
-		if (hasOpenSide) return;
+		OpenSideObject hasOpenSide = other.GetComponent<OpenSideObject>();
+		if (hasOpenSide && hasOpenSide.openSides) return;
 		moveToWallEdge(relation, other);
 	}
 
@@ -154,20 +154,27 @@ public class CollisionDetector : MonoBehaviour {
 		po.negateVertMovement();
 		po.enableSpeedChange = true;
 		po.changeSideSpeed(0);
+
+		//	Close the sides if you should
+		OpenSideObject oso = other.GetComponent<OpenSideObject>();
+		if (oso && oso.openSides) oso.closeSides();
 		//	Update the sticks to walls object
 		SticksToWalls stw = GetComponent<SticksToWalls>();
 		stw.onWall = true;
-		if (relation == relationToOther.TOLEFT) stw.stickingToLeftSideOfObject = true;
+		if (relation == relationToOther.TOLEFT) 
+			stw.stickingToLeftSideOfObject = true;
 		else stw.stickingToLeftSideOfObject = false;
 		//	Move to the edge of the wall
 		stickToWallEdge(relation, other);
+		po.negateVertAcceleration();
 	}
 
 	void stickToWallEdge(relationToOther relation, Collider other){
+		float newHalfWidth = GetComponent<SticksToWalls>().onWallShape.x / 2;
 		if (relation == relationToOther.TOLEFT) {
-			changeX (other.transform.position.x - (collider.bounds.extents.x + other.bounds.extents.x));
+			changeX (other.transform.position.x - (newHalfWidth + other.bounds.extents.x));
 		} else if (relation == relationToOther.TORIGHT) {
-			changeX(other.transform.position.x + (collider.bounds.extents.x + other.bounds.extents.x));
+			changeX(other.transform.position.x + newHalfWidth + other.bounds.extents.x);
 		}
 	}
 	//	END WALL STICKING FUNCTIONS
@@ -211,6 +218,7 @@ public class CollisionDetector : MonoBehaviour {
 //		} else {
 //			currentShroomLayer = null;
 //		}
+		OpenSideObject.openAllSides();
 		if (GetComponent<SticksToWalls>()) GetComponent<SticksToWalls>().onWall = false;
 		if (!landing.GetComponent<ShroomCube>()) onShroom = null;
 		if (GetComponent<JumpingObject> () != null) {

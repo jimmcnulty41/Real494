@@ -72,7 +72,10 @@ public class JumpingObject : MonoBehaviour {
 		SticksToWalls stw = GetComponent<SticksToWalls>();
 		if (stw.stickingToLeftSideOfObject)
 			jumpVelocityVec.x *= -1;
-
+		GetComponent<PhysicsObject>().disableDirection(
+			stw.stickingToLeftSideOfObject? PhysicsObject.direction.RIGHT: PhysicsObject.direction.LEFT
+			, delay);
+		GetComponent<PhysicsObject>().killHorVelocity = true;
 		return jumpVelocityVec;
 //		SticksToWalls stw = GetComponent<SticksToWalls>();
 //		Vector3 jumpVelocityVec = wallJumpVel;
@@ -106,7 +109,7 @@ public class JumpingObject : MonoBehaviour {
 			GetComponent<PhysicsObject>().killHorVelocity = true;
 			activeJumpHeight = jumpHeight;
 		}
-		if (atJumpTop()){
+		if (atJumpTop() && !GetComponent<SticksToWalls>().onWall){
 			fo.startJumpFall();
 		}
 		wallJumpVelocityActive = false;

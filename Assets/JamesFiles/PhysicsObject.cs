@@ -31,6 +31,16 @@ public class PhysicsObject : MonoBehaviour {
 	public bool ___________________;
 	public bool killHorVelocity = false;
 	public bool enableSpeedChange = true;
+
+	public enum direction{
+		LEFT,
+		RIGHT,
+	};
+
+	public bool leftDisabled = false;
+	public bool rightDisabled = false;
+	direction disableDir;
+
 	
 	//	Public functions
 	//=============================================
@@ -39,16 +49,28 @@ public class PhysicsObject : MonoBehaviour {
 	//-----------------------------------------------------
 	public void changeSideSpeed(float speed){
 		//	Nice big special case for wall sticking
-		if (!enableSpeedChange && (Mathf.Sign(speed) != Mathf.Sign(vel.x)))
-			speed = vel.x;
-		if (killHorVelocity && (Mathf.Sign(speed) == Mathf.Sign(vel.x)))
-			killHorVelocity = false;
+		if (leftDisabled && speed < 0) return;
+		if (rightDisabled && speed > 0) return;
+//		if (killHorVelocity && (Mathf.Sign(speed) == Mathf.Sign(vel.x)))
+//			killHorVelocity = false;
 //		if (killHorVelocity &&
 //			Mathf.Sign(speed) != Mathf.Sign(vel.x) && 
 //			vel.x != 0) speed = vel.x;
 		Vector3 curVel = vel;
 		curVel.x = speed;
 		vel = curVel;
+	}
+
+	public void disableDirection(direction dir, float time){
+		StartCoroutine(disableDirectionForTime(dir, time));
+	}
+
+	IEnumerator disableDirectionForTime(direction dir, float time){
+		if (dir == direction.RIGHT) rightDisabled = true;
+		else leftDisabled = true;
+		yield return new WaitForSeconds(time);
+		if (dir == direction.RIGHT) rightDisabled = false;
+		else leftDisabled = false;
 	}
 
 	public void changeVertSpeed(float speed){
@@ -97,8 +119,8 @@ public class PhysicsObject : MonoBehaviour {
 	void manageSideMovement(){
 //		SticksToWalls stw = GetComponent<SticksToWalls>();
 //		if (stw && stw.onWall) vel.x = 0;
-//		if (killHorVelocity) vel.x = Mathf.Lerp(vel.x, 0, killEasing); 
-//		if (Mathf.Abs(vel.x) < .001f) killHorVelocity = false;
+		if (killHorVelocity) vel.x = Mathf.Lerp(vel.x, 0, killEasing); 
+		if (Mathf.Abs(vel.x) < .001f) killHorVelocity = false;
 		Vector3 pos = transform.position;
 		pos.x += vel.x * Time.deltaTime;
 		transform.position = pos;
