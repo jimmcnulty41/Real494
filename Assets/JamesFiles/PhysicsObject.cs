@@ -85,19 +85,23 @@ public class PhysicsObject : MonoBehaviour {
 		manageSideMovement();
 		SticksToWalls stw = GetComponent<SticksToWalls>();
 		if (onGround && !GetComponent<CollisionDetector>().onShroom 
-		    && !stw && !stw.onWall) return;
+		    && (!stw || !stw.onWall)) return;
 		manageUpDownMovement();
 	}
 	
 	void manageSideMovement(){
-		if (killHorVelocity) vel.x = Mathf.Lerp(vel.x, 0, killEasing); 
-		if (Mathf.Abs(vel.x) < .001f) killHorVelocity = false;
+//		SticksToWalls stw = GetComponent<SticksToWalls>();
+//		if (stw && stw.onWall) vel.x = 0;
+//		if (killHorVelocity) vel.x = Mathf.Lerp(vel.x, 0, killEasing); 
+//		if (Mathf.Abs(vel.x) < .001f) killHorVelocity = false;
 		Vector3 pos = transform.position;
 		pos.x += vel.x * Time.deltaTime;
 		transform.position = pos;
 	}
 	
 	void manageUpDownMovement(){
+		SticksToWalls stw = GetComponent<SticksToWalls>();
+		if (stw && stw.onWall) accel.y = 0;
 		vel += accel * Time.deltaTime;
 		Vector3 pos = transform.position;
 		pos.y += vel.y * Time.deltaTime;

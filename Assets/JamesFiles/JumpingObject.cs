@@ -38,11 +38,10 @@ public class JumpingObject : MonoBehaviour {
 	public void jump(){
 		PhysicsObject po = GetComponent<PhysicsObject>();
 		// No jumping in the air
-		if (!po.onGround && !doubleJump) return;
-		print("A Jump");
+		SticksToWalls stw = GetComponent<SticksToWalls>();
+		if (!po.onGround && !doubleJump && (!stw || !stw.onWall)) return;
 		//	Determine the jump Velocity
 		Vector3 jumpVelocityVec = Vector3.zero;
-		SticksToWalls stw = GetComponent<SticksToWalls>();
 		if (stw && stw.onWall) jumpVelocityVec = jumpFromWall();
 		else jumpVelocityVec = new Vector3(0,jumpVelocity,0);
 		po.vel = jumpVelocityVec;
@@ -59,23 +58,32 @@ public class JumpingObject : MonoBehaviour {
 		GetComponent<PhysicsObject>().enableSpeedChange = true;
 	}
 
+	// 	Changes the state of the object to reflect it is jumping off a wall
+	//	and returns a Vector3 with the jump that the object will take
 	Vector3 jumpFromWall(){
-		SticksToWalls stw = GetComponent<SticksToWalls>();
 		Vector3 jumpVelocityVec = wallJumpVel;
-		float changeFactor = 1;
-		if (stw.stickingToLeftSideOfObject)
-			changeFactor *= -1;
-		jumpVelocityVec.x *= changeFactor;
-		GetComponent<PhysicsObject>().enableSpeedChange = false;
-		StartCoroutine(allowSpeedAfterDelay());
-//		Vector3 pos = transform.position;
-//		pos.x += changeFactor * forgiveness;
-//		transform.position = pos;
-		wallJumpVelocityActive = true;
-		activeJumpHeight = wallJumpHeight;
-		stw.onWall = false;
-		stw.stickingToLeftSideOfObject = false;
-		return jumpVelocityVec;
+		SticksToWalls stw = GetComponent<SticksToWalls>();
+
+//		SticksToWalls stw = GetComponent<SticksToWalls>();
+//		Vector3 jumpVelocityVec = wallJumpVel;
+//		float changeFactor = 1;
+//		if (stw.stickingToLeftSideOfObject)
+//			changeFactor *= -1;
+//		jumpVelocityVec.x *= changeFactor;
+//		GetComponent<PhysicsObject>().enableSpeedChange = false;
+//		StartCoroutine(allowSpeedAfterDelay());
+////		Vector3 pos = transform.position;
+////		pos.x += changeFactor * forgiveness;
+////		transform.position = pos;
+//		wallJumpVelocityActive = true;
+//		activeJumpHeight = wallJumpHeight;
+//		stw.onWall = false;
+//		stw.stickingToLeftSideOfObject = false;
+//		return jumpVelocityVec;
+	}
+
+	void reverseJumpDirection(){
+
 	}
 	
 	//	During update
@@ -88,14 +96,14 @@ public class JumpingObject : MonoBehaviour {
 	
 	void managePhysics(){
 		FallingObject fo = GetComponent<FallingObject>();
+		if (wallJumpVelocityActive){
+			GetComponent<PhysicsObject>().killHorVelocity = true;
+			activeJumpHeight = jumpHeight;
+		}
 		if (atJumpTop()){
 			fo.startJumpFall();
-			if (wallJumpVelocityActive){
-				GetComponent<PhysicsObject>().killHorVelocity = true;
-				activeJumpHeight = jumpHeight;
-				wallJumpVelocityActive = false;
-			}
 		}
+		wallJumpVelocityActive = false;
 	}	
 	
 	bool atJumpTop(){

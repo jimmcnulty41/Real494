@@ -14,3 +14,6 @@ Frog Jump:
 	Transition Easing: .05
 	
 Lizard Speed: 3
+Lizard Wall Jump Info:
+	Std. Jump
+	
