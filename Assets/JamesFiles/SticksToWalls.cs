@@ -26,4 +26,5 @@ public class SticksToWalls : MonoBehaviour {
 			transform.localScale = normalShape;
 		}
 	}
+
 }

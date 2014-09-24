@@ -20,4 +20,5 @@ Lizard Wall Jump Info:
 	WallJumpheight: .1
 	Delay: .2
 	Kill Easing: .13
+	Ensure Hero Collision Detector Forgiveness set to .1
 	

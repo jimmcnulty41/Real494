@@ -27,9 +27,7 @@ public enum relationToOther{
 public class CollisionDetector : MonoBehaviour {
 
 	public float forgiveness = .3f;
-	public float sinkamt = .001f;
 	public bool infinite_jump = false;
-	public float offset = .01f;
 	public ShroomCube onShroom = null;
 
 	public bool ____________________________;
@@ -122,6 +120,7 @@ public class CollisionDetector : MonoBehaviour {
 		//	and we're headed in the direction of the wall. 
 		print("sticking to edge");
 		stickToEdge(relation, other);
+		if (atWallTop(other)) landOnWallTop(other);
 		return true;
 	}
 
@@ -142,9 +141,9 @@ public class CollisionDetector : MonoBehaviour {
 	bool checkCorrectVelocity(relationToOther relation, Collider other){
 		PhysicsObject po = GetComponent<PhysicsObject>();
 		if (relation == relationToOther.TOLEFT &&
-		    po.vel.x <= 0) return false;
+		    po.vel.x < 0) return false;
 		if (relation == relationToOther.TORIGHT &&
-		    po.vel.x >= 0) return false;
+		    po.vel.x > 0) return false;
 		return true;
 	}
 
@@ -177,6 +176,15 @@ public class CollisionDetector : MonoBehaviour {
 			changeX(other.transform.position.x + newHalfWidth + other.bounds.extents.x);
 		}
 	}
+
+	bool atWallTop(Collider other){
+		return collider.bounds.min.y > (other.bounds.max.y - forgiveness);
+	}
+
+	void landOnWallTop(Collider other){
+		GetComponent<SticksToWalls>().onWall = false;
+	}
+
 	//	END WALL STICKING FUNCTIONS
 
 

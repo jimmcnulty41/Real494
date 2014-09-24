@@ -21,7 +21,6 @@ public class OpenSideObject : MonoBehaviour {
 
 	void Update(){
 		if (openAllSidesWasCalled){
-			print(gameObject.name);
 			openSides = true;
 		}
 	}
