@@ -12,3 +12,13 @@ Frog Jump:
 	Jump Height : 2.3
 	Fall Speed: 24
 	Transition Easing: .05
+	
+Lizard Speed: 3
+Lizard Wall Jump Info:
+	Std. Jump
+	Wall JumpVel: x, 3; y, 2
+	WallJumpheight: .1
+	Delay: .2
+	Kill Easing: .13
+	Ensure Hero Collision Detector Forgiveness set to .1
+	

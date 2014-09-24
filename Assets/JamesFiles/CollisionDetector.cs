@@ -27,9 +27,7 @@ public enum relationToOther{
 public class CollisionDetector : MonoBehaviour {
 
 	public float forgiveness = .3f;
-	public float sinkamt = .001f;
 	public bool infinite_jump = false;
-	public float offset = .01f;
 	public ShroomCube onShroom = null;
 
 	public bool ____________________________;
@@ -37,9 +35,9 @@ public class CollisionDetector : MonoBehaviour {
 	public Dictionary<Collider, relationToOther> touchingObjects 
 		= new Dictionary<Collider, relationToOther>();
 		
-
+	//========================================================================
 	//	Trigger Enter/Stay functions
-	//==========================================
+	//========================================================================
 
 	void OnTriggerEnter(Collider other){
 		touchingObjects.Add(other, getRelationToObject(other));
@@ -57,6 +55,13 @@ public class CollisionDetector : MonoBehaviour {
 	
 	void OnTriggerStay(Collider other){
 		//print(touchingObjects[other] + " of " + other.name);
+		if (other.GetComponent<OpenSideObject>() && 
+			    touchingObjects[other] == relationToOther.TOLEFT ||
+			    touchingObjects[other] == relationToOther.TORIGHT){
+			relationToOther newRel = getRelationToObject(other);
+			if (newRel == relationToOther.TOLEFT || newRel == relationToOther.TORIGHT)
+				touchingObjects[other] = newRel;
+		}
 		switchOnRelation(other);
 	}
 
@@ -75,6 +80,7 @@ public class CollisionDetector : MonoBehaviour {
 		PhysicsObject po = GetComponent<PhysicsObject>();
 		switch(touchingObjects[other]){
 			case relationToOther.ONTOP:
+			if (po.killHorVelocity) po.killHorVelocity = false;
 			changeY(other.transform.position.y + getTouchingDistanceY(other.gameObject));
 			break;
 		case relationToOther.TOLEFT:	
@@ -90,8 +96,99 @@ public class CollisionDetector : MonoBehaviour {
 	//	Respond to hitting sides/bottoms---------------------------------
 
 	void respondToSideHit(relationToOther relation, Collider other){
-		OpenSideObject hasOpenSide = other.GetComponent<OpenSideObject> ();
-		if (hasOpenSide) return;
+		//	Handle sticking to walls if we should, otherwise, don't
+		if (manageWallSticking(relation, other)) return;
+		//	If it has open sides, we go through them, so we don't adjust the position,
+		//	unless we're sticking to the wall, in which case we do
+		OpenSideObject hasOpenSide = other.GetComponent<OpenSideObject>();
+		if (hasOpenSide && hasOpenSide.openSides) return;
+		moveToWallEdge(relation, other);
+	}
+
+	//	Manages the collisions for objects which stick to walls,
+	//	If the object will react as if it does not stick to walls, returns false
+	bool manageWallSticking(relationToOther relation, Collider other){
+		PhysicsObject po = GetComponent<PhysicsObject>();
+		SticksToWalls stw = GetComponent<SticksToWalls>();
+		if (!stw) return false;
+		if (po.onGround) return false;
+		// Possible rotation solution -- however, needs to calculate touching distance differently
+		//transform.rotation = Quaternion.Euler(0,0,90);
+		if (checkAlreadyInBlock(relation, other)) return false;
+		if (!checkCorrectVelocity(relation, other)) return false;
+		//	If this is the case, we're in the air, we haven't already crossed the plane
+		//	and we're headed in the direction of the wall. 
+		print("sticking to edge");
+		stickToEdge(relation, other);
+		if (atWallTop(other)) landOnWallTop(other);
+		return true;
+	}
+
+	//	Returns true if we have already crossed the plane of a block
+	bool checkAlreadyInBlock(relationToOther relation, Collider other){
+		if (collider.bounds.max.x > other.bounds.min.x + forgiveness &&
+		    collider.bounds.min.x < other.bounds.min.x) return true;
+		if (collider.bounds.min.x < other.bounds.max.x - forgiveness &&
+		    collider.bounds.max.x > other.bounds.max.x) return true;
+		if (collider.bounds.max.x < other.bounds.max.x &&
+		    collider.bounds.min.x > other.bounds.min.x) return true;
+		return false;
+	}
+
+	
+	//	Returns true if the velocity is correct for sticking to walls 
+	//	i.e. the hero is jumping toward the wall
+	bool checkCorrectVelocity(relationToOther relation, Collider other){
+		PhysicsObject po = GetComponent<PhysicsObject>();
+		if (relation == relationToOther.TOLEFT &&
+		    po.vel.x < 0) return false;
+		if (relation == relationToOther.TORIGHT &&
+		    po.vel.x > 0) return false;
+		return true;
+	}
+
+
+	void stickToEdge(relationToOther relation, Collider other){
+		PhysicsObject po = GetComponent<PhysicsObject>();
+		po.negateVertMovement();
+		po.enableSpeedChange = true;
+		po.changeSideSpeed(0);
+
+		//	Close the sides if you should
+		OpenSideObject oso = other.GetComponent<OpenSideObject>();
+		if (oso && oso.openSides) oso.closeSides();
+		//	Update the sticks to walls object
+		SticksToWalls stw = GetComponent<SticksToWalls>();
+		stw.onWall = true;
+		if (relation == relationToOther.TOLEFT) 
+			stw.stickingToLeftSideOfObject = true;
+		else stw.stickingToLeftSideOfObject = false;
+		//	Move to the edge of the wall
+		stickToWallEdge(relation, other);
+		po.negateVertAcceleration();
+	}
+
+	void stickToWallEdge(relationToOther relation, Collider other){
+		float newHalfWidth = GetComponent<SticksToWalls>().onWallShape.x / 2;
+		if (relation == relationToOther.TOLEFT) {
+			changeX (other.transform.position.x - (newHalfWidth + other.bounds.extents.x));
+		} else if (relation == relationToOther.TORIGHT) {
+			changeX(other.transform.position.x + newHalfWidth + other.bounds.extents.x);
+		}
+	}
+
+	bool atWallTop(Collider other){
+		return collider.bounds.min.y > (other.bounds.max.y - forgiveness);
+	}
+
+	void landOnWallTop(Collider other){
+		GetComponent<SticksToWalls>().onWall = false;
+	}
+
+	//	END WALL STICKING FUNCTIONS
+
+
+	void moveToWallEdge(relationToOther relation, Collider other){
 		if (relation == relationToOther.TOLEFT) {
 			changeX (other.transform.position.x - getTouchingDistanceX (other.gameObject));
 		} else if (relation == relationToOther.TORIGHT) {
@@ -129,6 +226,8 @@ public class CollisionDetector : MonoBehaviour {
 //		} else {
 //			currentShroomLayer = null;
 //		}
+		OpenSideObject.openAllSides();
+		if (GetComponent<SticksToWalls>()) GetComponent<SticksToWalls>().onWall = false;
 		if (!landing.GetComponent<ShroomCube>()) onShroom = null;
 		if (GetComponent<JumpingObject> () != null) {
 			JumpingObject jo = GetComponent<JumpingObject> ();
@@ -147,8 +246,9 @@ public class CollisionDetector : MonoBehaviour {
 
 	}
 
+	//=====================================================================
 	//	OnTriggerExit Functions
-	//===================================================
+	//=====================================================================
 	
 	void OnTriggerExit(Collider other){
 		//print ("Removed " + other.name + " from touchingObjects");
@@ -233,8 +333,8 @@ public class CollisionDetector : MonoBehaviour {
 	//=========================================
 
 	bool inBounds(Collider other){
-		return (collider.bounds.min.x > other.bounds.max.x ||
-		        collider.bounds.max.x < other.bounds.min.x);
+		return (collider.bounds.min.x < other.bounds.max.x 
+		        && collider.bounds.max.x > other.bounds.min.x);
 	}
 	
 	float getTopEdge(GameObject go){

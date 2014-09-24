@@ -20,22 +20,71 @@ public class JumpingObject : MonoBehaviour {
 	
 	public float jumpVelocity = 6;
 	public float jumpHeight = 1.2f;
+	public float wallJumpHeight = .1f;
+	public Vector3 wallJumpVel;
 	public bool doubleJump = false;
+	public float forgiveness = .1f;
+	public float delay = .1f;
+	public bool __________________________;
 	Vector3 jumpBottom;
+	public bool wallJumpVelocityActive = false;
+	public bool wallJumping = false;
+	public float activeJumpHeight;
+
+	void Awake(){ activeJumpHeight = jumpHeight; }
 	
+
 	//	Public functions to call
 	//==============================================
 	public void jump(){
 		PhysicsObject po = GetComponent<PhysicsObject>();
-//		GetComponent<CollisionDetector>().currentShroomLayer = null;
 		// No jumping in the air
-		GetComponent<CollisionDetector>().onShroom = null;
-		if (!po.onGround && !doubleJump) return;
-		//	Make velocity equal to the jump velocity
-		po.vel += new Vector3(0,jumpVelocity,0);
+		SticksToWalls stw = GetComponent<SticksToWalls>();
+		if (!po.onGround && !doubleJump && (!stw || !stw.onWall)) return;
+		//	Determine the jump Velocity
+		setJumpVelocity();
+		//	Update information about grounding
 		po.onGround = false;
+		GetComponent<CollisionDetector>().onShroom = null;
+		stw.onWall = false;
+		//	Set up end of jump
 		jumpBottom = transform.position;	
 		doubleJump = false;
+	}
+
+	void setJumpVelocity(){
+		PhysicsObject po = GetComponent<PhysicsObject>();
+		SticksToWalls stw = GetComponent<SticksToWalls>();
+		Vector3 jumpVelocityVec = Vector3.zero;
+		if ((stw && stw.onWall) || wallJumping) jumpVelocityVec = jumpFromWall();
+		else jumpVelocityVec = jumpFromGround();
+		po.vel = jumpVelocityVec;
+	}
+
+	Vector3 jumpFromGround(){
+		activeJumpHeight = jumpHeight;
+		return new Vector3(0,jumpVelocity,0);
+	}
+
+	IEnumerator allowSpeedAfterDelay(){
+		yield return new WaitForSeconds(delay);
+		GetComponent<PhysicsObject>().enableSpeedChange = true;
+	}
+
+	// 	Changes the state of the object to reflect it is jumping off a wall
+	//	and returns a Vector3 with the jump that the object will take
+	Vector3 jumpFromWall(){
+		wallJumping = true;
+		Vector3 jumpVelocityVec = wallJumpVel;
+		SticksToWalls stw = GetComponent<SticksToWalls>();
+		if (stw.stickingToLeftSideOfObject)
+			jumpVelocityVec.x *= -1;
+		GetComponent<PhysicsObject>().disableDirection(
+			stw.stickingToLeftSideOfObject? PhysicsObject.direction.RIGHT: PhysicsObject.direction.LEFT
+			, delay);
+		activeJumpHeight = wallJumpHeight;
+		GetComponent<PhysicsObject>().killHorVelocity = true;
+		return jumpVelocityVec;
 	}
 	
 	//	During update
@@ -47,12 +96,20 @@ public class JumpingObject : MonoBehaviour {
 	}
 	
 	void managePhysics(){
-		if (atJumpTop()) GetComponent<FallingObject>().startJumpFall();
+		FallingObject fo = GetComponent<FallingObject>();
+		if (wallJumpVelocityActive){
+			GetComponent<PhysicsObject>().killHorVelocity = true;
+		}
+		if (atJumpTop() && !GetComponent<SticksToWalls>().onWall){
+			wallJumping = false;
+			fo.startJumpFall();
+		}
+		wallJumpVelocityActive = false;
 	}	
 	
 	bool atJumpTop(){
 		if (GetComponent<FallingObject>().falling) return false;
-		return (transform.position.y - jumpBottom.y >= jumpHeight);
+		return (transform.position.y - jumpBottom.y >= activeJumpHeight);
 	}
 
 

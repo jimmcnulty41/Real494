@@ -24,8 +24,20 @@ public class FallingObject : MonoBehaviour {
 	public float transitionEasing;
 	
 	void FixedUpdate(){
+		//	If we're not currently falling, it's not the falling object's job
+		//	to manage anything
 		if (!falling) return;
+		//	James McNulty 9/22/2014 11:18 PM
+		//	If we can stick to walls and we are sticking to walls, 
+		//	we don't do any falling
+		SticksToWalls stw = GetComponent<SticksToWalls>();
+		if (stw && stw.onWall){
+			falling = false;
+			return;
+		}
+		//	Otherwise, if we still have positive velocity, we transition
 		if (GetComponent<PhysicsObject>().vel.y > 0) transitionIntoFall();
+		//	And we fall
 		fall();
 	}
 
@@ -47,6 +59,9 @@ public class FallingObject : MonoBehaviour {
 		transitionEasing = setTransitionEasing;
 	}
 
+
+	//	When this function is called, the object will immediately fall
+	//---------------------------------------------------------------
 	public void instantFall(){
 		//	If the object is in the air, and its velocity is negative,
 		//	we're already falling. do nothing further.
@@ -60,13 +75,15 @@ public class FallingObject : MonoBehaviour {
 		transitionEasing = 1;
 	}
 
-	//	This function begins the transition into a fall from a jump
+	//	This function begins the transition into a fall from a jump using "setTransitionEasing"
+	//--------------------------------------------------------------
 	public void startJumpFall(){
 		PhysicsObject po = GetComponent<PhysicsObject>();
 		po.accel = new Vector3(0,-fallSpeed,0);
 		falling = true;
 	}
 
+	//	Does one iteration bringing the velocity closer to 0 using the transitionEasing
 	public void transitionIntoFall(){
 		PhysicsObject po = GetComponent<PhysicsObject>();
 		Vector3 vel = po.vel;
@@ -77,5 +94,9 @@ public class FallingObject : MonoBehaviour {
 	public void land(){
 		falling = false;
 	}
-	
+
+
+	void Awake(){
+		transitionEasing = setTransitionEasing;
+	}
 }
