@@ -105,11 +105,9 @@ public class MakeShroom : MonoBehaviour {
 		bottomLeftCorner = transform.position;
 		bottomLeftCorner.x -= width / 2;
 		bottomLeftCorner.y += height / 2;
-		bottomLeftCorner.z = 0;
 		bottomRightCorner = transform.position;
 		bottomRightCorner.x += width / 2;
 		bottomRightCorner.y += height / 2;
-		bottomRightCorner.z = 0;
 
 		//	Find the number of cubes that will be created on top of the base
 		float numberOfCubes = ((width - minX) / xChange);
