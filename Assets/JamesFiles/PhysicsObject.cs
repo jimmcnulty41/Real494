@@ -48,6 +48,7 @@ public class PhysicsObject : MonoBehaviour {
 	//	Changes the x velocity of the object to speed
 	//-----------------------------------------------------
 	public void changeSideSpeed(float speed){
+		if (!enableSpeedChange) return;
 		//	Nice big special case for wall sticking
 		if (leftDisabled && speed < 0) return;
 		if (rightDisabled && speed > 0) return;
