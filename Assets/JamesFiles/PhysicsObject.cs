@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 //	PhysicsObject Class
@@ -48,6 +48,7 @@ public class PhysicsObject : MonoBehaviour {
 	//	Changes the x velocity of the object to speed
 	//-----------------------------------------------------
 	public void changeSideSpeed(float speed){
+		if (!enableSpeedChange) return;
 		//	Nice big special case for wall sticking
 		if (leftDisabled && speed < 0) return;
 		if (rightDisabled && speed > 0) return;
@@ -83,7 +84,7 @@ public class PhysicsObject : MonoBehaviour {
 	//------------------------------------------
 	public void land(){
 		onGround = true;
-		changeSideSpeed(0);
+		if (!GetComponent<SlidingObject>())	changeSideSpeed(0);
 		negateVertMovement();
 	}
 	
@@ -111,8 +112,9 @@ public class PhysicsObject : MonoBehaviour {
 		if (immovable) return;
 		manageSideMovement();
 		SticksToWalls stw = GetComponent<SticksToWalls>();
-		if (onGround && !GetComponent<CollisionDetector>().onShroom 
-		    && (!stw || !stw.onWall)) return;
+		bool onWall = stw && stw.onWall;
+		bool onShroom = GetComponent<CollisionDetector>().onShroom;
+		if (onGround && !onShroom && !onWall) return;
 		manageUpDownMovement();
 	}
 	

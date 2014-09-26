@@ -56,7 +56,13 @@ public class MakeShroom : MonoBehaviour {
 
 	void createBaseCube(){
 		GameObject baseCube = Instantiate(shroomBasePrefab) as GameObject;
-		baseCube.transform.position = transform.position;
+		Vector3 scale = baseCube.transform.localScale;
+		scale.y = 2 * height;
+		baseCube.transform.localScale = scale;
+
+		Vector3 pos = transform.position;
+		//pos.y -= height / 2;
+		baseCube.transform.position = pos;
 		//baseCube.transform.parent = shroomContainer.transform;
 	}
 

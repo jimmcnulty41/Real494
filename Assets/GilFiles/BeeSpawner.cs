@@ -4,15 +4,39 @@ using System.Collections;
 public class BeeSpawner : MonoBehaviour {
 
 	public GameObject BeePreFab;
+	public float SpawnDelay;
+	Time startTime;
+	float delay = .5f;
 
 	GameObject bee = null; 
-
+	public bool canSpawn = true;
 
 	// Use this for initialization
 	void Start () {
 	
 	}
-	
+
+	IEnumerator Spawn() {
+
+		canSpawn = false;
+		GameObject hero = GameObject.Find ("Hero");
+
+		yield return new WaitForSeconds (SpawnDelay);
+
+		Vector3 pos = hero.transform.position;
+		float camHeight = 2.0f * Camera.main.orthographicSize;
+		float camWidth = camHeight * Camera.main.aspect;
+		
+		pos.y += (camWidth / 4);
+		pos.x += ((camWidth / 2) - 0.5f);
+		pos.z = -0.2f;
+
+		bee = Instantiate (BeePreFab) as GameObject;		
+		bee.transform.position = pos;
+		canSpawn = true;
+
+	}
+
 	// Update is called once per frame
 	void Update () {
 		Vector3 pos = transform.position;
@@ -29,26 +53,18 @@ public class BeeSpawner : MonoBehaviour {
 		}
 
 		if (bee == null) {
-			GameObject hero = GameObject.Find("Hero");
-			pos = hero.transform.position;
-			pos.y += (camWidth / 4);
-			pos.x += ((camWidth / 2) - 0.5f);
-			pos.z = -0.2f;
-			bee = Instantiate (BeePreFab) as GameObject;
-
-			bee.transform.position = pos;
-			
-		}
-
-		/*if (bee != null) {
-			if ((bee.transform.position.x <= (cameraPos.x - ((camWidth / 2) - 1f)))
-			 ||
-				(bee.transform.position.y <= (cameraPos.y - ((camHeight / 2) - 1f)))
-			   ) {
-				Vector3 vel = bee.GetComponent<PhysicsObject>().vel;
-				bee.GetComponent<PhysicsObject>().vel = vel * -1;
+//			GameObject hero = GameObject.Find ("Hero");
+//			pos = hero.transform.position;
+//			pos.y += (camWidth / 4);
+//			pos.x += ((camWidth / 2) - 0.5f);
+//			pos.z = -0.2f;
+//			bee = Instantiate (BeePreFab) as GameObject;
+//			bee.transform.position = pos;
+//		}
+			if (canSpawn == false) {
+				return;
 			}
-		}*/
-
+			StartCoroutine (Spawn ());
+		}
 	}
 }

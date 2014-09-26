@@ -40,9 +40,18 @@ public class CollisionDetector : MonoBehaviour {
 	//========================================================================
 
 	void OnTriggerEnter(Collider other){
+		if (other.gameObject.tag == "Health" || other.gameObject.tag == "Life"
+		    || other.gameObject.tag == "Key") {
+			return;
+		}
+		if (other.gameObject.tag == "Savepoint") {
+			other.enabled = false;
+			return;
+		}
 		touchingObjects.Add(other, getRelationToObject(other));
-		if (touchingObjects[other] == relationToOther.ONTOP)
+		if (touchingObjects [other] == relationToOther.ONTOP) {
 			land (other);
+		}
 		if (touchingObjects[other] == relationToOther.ONSLOPE && !onShroom){
 			onShroom = other.GetComponent<ShroomCube>();
 			other.GetComponent<ShroomCube>().modifyPosition(gameObject);
@@ -82,6 +91,8 @@ public class CollisionDetector : MonoBehaviour {
 			case relationToOther.ONTOP:
 			if (po.killHorVelocity) po.killHorVelocity = false;
 			changeY(other.transform.position.y + getTouchingDistanceY(other.gameObject));
+			po.onGround = true;
+			land(other);
 			break;
 		case relationToOther.TOLEFT:	
 		case relationToOther.TORIGHT:
@@ -110,6 +121,9 @@ public class CollisionDetector : MonoBehaviour {
 	bool manageWallSticking(relationToOther relation, Collider other){
 		PhysicsObject po = GetComponent<PhysicsObject>();
 		SticksToWalls stw = GetComponent<SticksToWalls>();
+		StickyWalls sw = other.GetComponent<StickyWalls>();
+		if (!sw) return false;
+		if (!sw.allows(relation)) return false;
 		if (!stw) return false;
 		if (po.onGround) return false;
 		// Possible rotation solution -- however, needs to calculate touching distance differently
@@ -151,8 +165,8 @@ public class CollisionDetector : MonoBehaviour {
 	void stickToEdge(relationToOther relation, Collider other){
 		PhysicsObject po = GetComponent<PhysicsObject>();
 		po.negateVertMovement();
-		po.enableSpeedChange = true;
-		po.changeSideSpeed(0);
+		//po.enableSpeedChange = true;
+		//po.changeSideSpeed(0);
 
 		//	Close the sides if you should
 		OpenSideObject oso = other.GetComponent<OpenSideObject>();
@@ -182,7 +196,10 @@ public class CollisionDetector : MonoBehaviour {
 	}
 
 	void landOnWallTop(Collider other){
-		GetComponent<SticksToWalls>().onWall = false;
+		SticksToWalls stw = GetComponent<SticksToWalls>();
+		touchingObjects[other] = relationToOther.ONTOP;
+		stw.onWall = false;
+		stw.landOnWallTop();
 	}
 
 	//	END WALL STICKING FUNCTIONS
@@ -261,7 +278,15 @@ public class CollisionDetector : MonoBehaviour {
 		switch(relation){
 		case relationToOther.ONTOP:
 			if (!GetComponent<PhysicsObject>().onGround) return;
+			else if (onShroom) return;
 			else GetComponent<FallingObject>().fall();
+			break;
+		case relationToOther.TORIGHT:
+		case relationToOther.TOLEFT:
+			if (!other.GetComponent<StickyWalls>()) return;
+			SticksToWalls stw = GetComponent<SticksToWalls>();
+			if (!stw) return;
+			if (stw.onWall) landOnWallTop(other);
 			break;
 		}	
 	}
