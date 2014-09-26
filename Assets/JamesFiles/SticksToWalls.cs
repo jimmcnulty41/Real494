@@ -18,13 +18,20 @@ public class SticksToWalls : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
+		PhysicsObject po = GetComponent<PhysicsObject>();
 		if (onWall){ 
-			PhysicsObject po = GetComponent<PhysicsObject>();
 			po.changeSideSpeed(0);
+			po.enableSpeedChange = false;
 			transform.localScale = onWallShape;
 		} else {
-			transform.localScale = normalShape;
+			landOnWallTop();
 		}
+	}
+
+	public void landOnWallTop(){
+		PhysicsObject po = GetComponent<PhysicsObject>();
+		po.enableSpeedChange = true;
+		transform.localScale = normalShape;
 	}
 
 }
