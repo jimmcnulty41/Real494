@@ -165,6 +165,7 @@ public class MakeShroom : MonoBehaviour {
 			pos.x = mover.transform.position.x;
 			pos.y += mover.collider.bounds.extents.y;
 		}
+		pos.z = 0;
 		return pos;
 	}
 

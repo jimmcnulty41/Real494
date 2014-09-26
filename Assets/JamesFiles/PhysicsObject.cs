@@ -113,7 +113,8 @@ public class PhysicsObject : MonoBehaviour {
 		manageSideMovement();
 		SticksToWalls stw = GetComponent<SticksToWalls>();
 		bool onWall = stw && stw.onWall;
-		bool onShroom = GetComponent<CollisionDetector>().onShroom;
+
+		bool onShroom = GetComponent<CollisionDetector>() && GetComponent<CollisionDetector>().onShroom;
 		if (onGround && !onShroom && !onWall) return;
 		manageUpDownMovement();
 	}

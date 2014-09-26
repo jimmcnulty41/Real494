@@ -14,7 +14,7 @@ public class SavePoint : MonoBehaviour {
 
 	}
 	void OnTriggerEnter(Collider other) {
-		if (other.gameObject.tag != "Savepoint") {
+		if (other.gameObject.tag != "SavePoint") {
 			return;
 		}
 		savePoint = other.gameObject.transform.position;

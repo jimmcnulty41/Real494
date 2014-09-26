@@ -44,7 +44,7 @@ public class CollisionDetector : MonoBehaviour {
 		    || other.gameObject.tag == "Key") {
 			return;
 		}
-		if (other.gameObject.tag == "Savepoint") {
+		if (other.gameObject.tag == "Savepoint" && gameObject.tag == "Hero") {
 			other.enabled = false;
 			return;
 		}

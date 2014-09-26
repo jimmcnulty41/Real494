@@ -35,6 +35,10 @@ public class Hero : MonoBehaviour {
 	public GUIText typeGT;
 	public GUIText healthGT;
 	public GUIText keysGT;
+	public Sprite nemoStd;
+	public Sprite nemoFrog;
+	public Sprite nemoLizard;
+	public Sprite nemoLizardOnWall;
 
 	public int livesCount;
 	int keysCount;
@@ -150,12 +154,12 @@ public class Hero : MonoBehaviour {
 		renderer.material.color = animalMAT.color;
 		//update special ability
 		if (type == "Frog") {
+			changeSprite("nemoFrog");
 			killOnJump = true;
 		} else if (type == "Lizard") {
+			changeSprite("nemoLizard");
 			stickToWalls = true;
-		} else if (type == "Mole") {
-			dig = true;
-		}
+		} 
 		//set the new original jump:
 		originalJumpHeight = GetComponent<JumpingObject>().jumpHeight;
 		originalJumpVelocity = GetComponent<JumpingObject>().jumpVelocity;
@@ -173,7 +177,7 @@ public class Hero : MonoBehaviour {
 		type = "Nemo";
 		typeGT.text = "Type: " + type;
 
-		renderer.material.color = Color.white;
+		changeSprite("NemoStd");
 
 		originalJumpHeight = GetComponent<JumpingObject>().jumpHeight;
 		originalJumpVelocity = GetComponent<JumpingObject>().jumpVelocity;
@@ -183,6 +187,15 @@ public class Hero : MonoBehaviour {
 		dig = false;
 		canThrow = true;
 	}
+
+	public void changeSprite(string spriteName){
+		SpriteRenderer rend = GetComponent<SpriteRenderer>();
+		if (spriteName == "nemoStd") rend.sprite = nemoStd;
+		if (spriteName == "nemoFrog") rend.sprite = nemoFrog;
+		if (spriteName == "nemoLizard") rend.sprite = nemoLizard;
+		if (spriteName == "nemoLizardOnWall") rend.sprite = nemoLizardOnWall;
+	}
+
 
 	void OnTriggerEnter(Collider other){
 		//first, check if its an Animal - only animals have this component
@@ -271,23 +284,17 @@ public class Hero : MonoBehaviour {
 		immune = true;
 		gameObject.layer = ImmuneLayer;
 		//gameObject.AddComponent<OpenSideObject> ();
-		Color color = renderer.material.color;
-		renderer.material.color = Color.red;
-		yield return new WaitForSeconds(0.25f);
-		gameObject.layer = HeroLayer;
-		renderer.material.color = color;
-		yield return new WaitForSeconds(0.25f);
-		renderer.material.color = Color.red;
-		yield return new WaitForSeconds(0.25f);
-		renderer.material.color = color;
-		yield return new WaitForSeconds(0.25f);
-		renderer.material.color = Color.red;
-		yield return new WaitForSeconds(0.25f);
-		renderer.material.color = color;
-		yield return new WaitForSeconds(0.25f);
-		renderer.material.color = Color.red;
-		yield return new WaitForSeconds(0.25f);
-		renderer.material.color = color;
+		for (int i = 0; i < 7; ++i){
+			SpriteRenderer rend = GetComponentInChildren<SpriteRenderer>();
+			Color c = rend.color;
+			c.a = .4f;
+			rend.color = c;
+			yield return new WaitForSeconds(0.25f);
+			gameObject.layer = HeroLayer;
+			c = rend.color;
+			c.a = 1f;
+			rend.color = c;
+		}
 		//OpenSideObject oso = GetComponent<OpenSideObject> ();
 		//Destroy (oso);
 		immune = false;

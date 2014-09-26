@@ -12,15 +12,15 @@ public class Candy : MonoBehaviour {
 	}
 
 	void Awake(){
-		GameObject hero = GameObject.Find("Hero");
+		GameObject hero = GameObject.Find("Hero_wSprite");
+		PhysicsObject po = GetComponent<PhysicsObject>();
+		Vector3 accel = po.accel;
 		if (hero.GetComponent<HeroMovement> ().facingLeft) {
-			GetComponent<PhysicsObject> ().changeSideSpeed(-velocityX);
-			print (GetComponent<PhysicsObject> ().vel);
+			accel.x = velocityX * -1;
 		} else {
-			GetComponent<PhysicsObject> ().changeSideSpeed(velocityX);
-			print (GetComponent<PhysicsObject> ().vel);
-
+			accel.x = velocityX;
 		}
+		po.accel = accel;
 	}
 	
 	// Update is called once per frame
@@ -30,7 +30,8 @@ public class Candy : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other){
 
-		if (other.gameObject.GetComponent<AnimalBehavior> () != null) {
+		if (other.gameObject.GetComponent<AnimalBehavior>() != null) {
+			print ("here");
 			if (other.gameObject.GetComponent<AnimalBehavior>().friendable == false) {
 				other.gameObject.GetComponent<AnimalBehavior>().GetStunned();
 			}

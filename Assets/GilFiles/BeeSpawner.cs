@@ -19,7 +19,7 @@ public class BeeSpawner : MonoBehaviour {
 	IEnumerator Spawn() {
 
 		canSpawn = false;
-		GameObject hero = GameObject.Find ("Hero");
+		GameObject hero = GameObject.Find ("Hero_wSprite");
 
 		yield return new WaitForSeconds (SpawnDelay);
 
@@ -29,7 +29,7 @@ public class BeeSpawner : MonoBehaviour {
 		
 		pos.y += (camWidth / 4);
 		pos.x += ((camWidth / 2) - 0.5f);
-		pos.z = -0.2f;
+		pos.z = 0f;
 
 		bee = Instantiate (BeePreFab) as GameObject;		
 		bee.transform.position = pos;
