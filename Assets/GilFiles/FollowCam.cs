@@ -54,7 +54,7 @@ public class FollowCam : MonoBehaviour {
 			transform.position = destinationY;
 			falling = true;
 		} else if (falling == true) {
-			print(targetPos);
+			//print(targetPos);
 			Vector3 destinationY = transform.position;
 			destinationY.y = InitialCameraHeight;
 			transform.position = destinationY;

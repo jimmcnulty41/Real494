@@ -14,10 +14,10 @@ public class Candy : MonoBehaviour {
 	void Awake(){
 		GameObject hero = GameObject.Find("Hero");
 		if (hero.GetComponent<HeroMovement> ().facingLeft) {
-			GetComponent<PhysicsObject> ().vel.x = -velocityX;
+			GetComponent<PhysicsObject> ().changeSideSpeed(-velocityX);
 			print (GetComponent<PhysicsObject> ().vel);
 		} else {
-			GetComponent<PhysicsObject> ().vel.x = velocityX;
+			GetComponent<PhysicsObject> ().changeSideSpeed(velocityX);
 			print (GetComponent<PhysicsObject> ().vel);
 
 		}
