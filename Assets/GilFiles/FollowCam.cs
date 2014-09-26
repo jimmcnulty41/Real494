@@ -25,7 +25,7 @@ public class FollowCam : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 		float FollowY; //used to check if camera should move up
 		float InitialCameraHeight;
 		//print (CameraOffset);

@@ -42,9 +42,18 @@ public class CollisionDetector : MonoBehaviour {
 	//==========================================
 
 	void OnTriggerEnter(Collider other){
+		if (other.gameObject.tag == "Health" || other.gameObject.tag == "Life"
+		    || other.gameObject.tag == "Key") {
+			return;
+		}
+		if (other.gameObject.tag == "Savepoint") {
+			other.enabled = false;
+			return;
+		}
 		touchingObjects.Add(other, getRelationToObject(other));
-		if (touchingObjects[other] == relationToOther.ONTOP)
+		if (touchingObjects [other] == relationToOther.ONTOP) {
 			land (other);
+		}
 		if (touchingObjects[other] == relationToOther.ONSLOPE && !onShroom){
 			onShroom = other.GetComponent<ShroomCube>();
 			other.GetComponent<ShroomCube>().modifyPosition(gameObject);

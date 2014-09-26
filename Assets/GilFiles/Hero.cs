@@ -20,7 +20,7 @@ public class Hero : MonoBehaviour {
 	public bool killOnJump;
 	public bool stickToWalls;
 	public bool dig;
-	int health;
+	public int health;
 	string type;
 
 	public float throwingDelay; //time it takes to initiate throwing
@@ -90,7 +90,6 @@ public class Hero : MonoBehaviour {
 
 		if (Input.GetKeyDown(KeyCode.RightShift)) changeBack();
 		if (Input.GetKeyDown(KeyCode.Z)) throwCandy();
-//		if (Input.GetKeyDown(KeyCode.V)) jump();
 	}
 
 	IEnumerator Throw() {
@@ -165,6 +164,8 @@ public class Hero : MonoBehaviour {
 	}
 
 	void changeBack (){
+		if (type == "Nemo")
+			return;
 		GetComponent<JumpingObject> ().jumpHeight = 1.2f;
 		GetComponent<JumpingObject> ().jumpVelocity = 8.0f;
 		GetComponent<FallingObject> ().fallSpeed = 24.0f;
@@ -173,6 +174,9 @@ public class Hero : MonoBehaviour {
 		typeGT.text = "Type: " + type;
 
 		renderer.material.color = Color.white;
+
+		originalJumpHeight = GetComponent<JumpingObject>().jumpHeight;
+		originalJumpVelocity = GetComponent<JumpingObject>().jumpVelocity;
 
 		killOnJump = false;
 		stickToWalls = false;
@@ -194,12 +198,6 @@ public class Hero : MonoBehaviour {
 			if (heroBottom >= animalTop) {
 				kill (other);		
 			} else {
-//				health--;
-//				healthGT.text = "Health: " + health;
-//				miniJump();
-//				if (health <= 0) {
-//					die ();
-//				}
 				takeDamage();
 				miniJump();
 			}
@@ -209,14 +207,18 @@ public class Hero : MonoBehaviour {
 			livesCount++;
 			livesGT.text = "Lives: " + livesCount.ToString ();
 			Destroy (other.gameObject);
+
 		} else if (other.gameObject.tag == "Key") {
 			keysCount++;
 			keysGT.text = "Keys: " + keysCount + "/" + keysMax;
 			Destroy (other.gameObject);
 		} else if (other.gameObject.tag == "Health") {
+			print (health);
 			if (health < 4) {
 				health++;
+				print (health);
 			}
+			print (health);
 			healthGT.text = "Health: " + health;
 			Destroy (other.gameObject);
 		} else if (other.gameObject.tag == "Door") {
@@ -256,24 +258,11 @@ public class Hero : MonoBehaviour {
 				Destroy (other.gameObject);
 			}
 		} else {	
-//			health--;
-//			healthGT.text = "Health: " + health;
-//			if (health <= 0) {
-//				die ();
-//			}
 			takeDamage ();
 		}
 		miniJump();
 	}
-
-	void die (){
-		livesCount--;
-		livesGT.text = "Lives: " + livesCount.ToString();
-		if (livesCount <= 0) {
-			//go to game over scene
-			Application.LoadLevel ("_Scene_0");
-		}
-	}
+	
 
 	int HeroLayer = 11;
 	int ImmuneLayer = 13;
@@ -281,23 +270,26 @@ public class Hero : MonoBehaviour {
 	IEnumerator Immune() {
 		immune = true;
 		gameObject.layer = ImmuneLayer;
+		//gameObject.AddComponent<OpenSideObject> ();
 		Color color = renderer.material.color;
 		renderer.material.color = Color.red;
 		yield return new WaitForSeconds(0.25f);
-		renderer.material.color = color;
-		yield return new WaitForSeconds(0.25f);
-		renderer.material.color = Color.red;
-		yield return new WaitForSeconds(0.25f);
-		renderer.material.color = color;
-		yield return new WaitForSeconds(0.25f);
-		renderer.material.color = Color.red;
-		yield return new WaitForSeconds(0.25f);
-		renderer.material.color = color;
-		yield return new WaitForSeconds(0.25f);
-		renderer.material.color = Color.red;
-		yield return new WaitForSeconds(0.25f);
-		renderer.material.color = color;
 		gameObject.layer = HeroLayer;
+		renderer.material.color = color;
+		yield return new WaitForSeconds(0.25f);
+		renderer.material.color = Color.red;
+		yield return new WaitForSeconds(0.25f);
+		renderer.material.color = color;
+		yield return new WaitForSeconds(0.25f);
+		renderer.material.color = Color.red;
+		yield return new WaitForSeconds(0.25f);
+		renderer.material.color = color;
+		yield return new WaitForSeconds(0.25f);
+		renderer.material.color = Color.red;
+		yield return new WaitForSeconds(0.25f);
+		renderer.material.color = color;
+		//OpenSideObject oso = GetComponent<OpenSideObject> ();
+		//Destroy (oso);
 		immune = false;
 
 	}
@@ -314,5 +306,21 @@ public class Hero : MonoBehaviour {
 		}
 
 		StartCoroutine (Immune ());
+	}
+
+	void die (){
+		livesCount--;
+
+		if (livesCount <= 0) {
+			//go to game over scene
+			Application.LoadLevel ("_Scene_0");
+		}
+
+		livesGT.text = "Lives: " + livesCount.ToString();
+		health = 3;
+		healthGT.text = "Health: " + health;
+		Vector3 savePoint = GetComponent<SavePoint> ().savePoint;
+		transform.position = savePoint;
+		changeBack ();
 	}
 }
