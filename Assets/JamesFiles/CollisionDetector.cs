@@ -110,6 +110,8 @@ public class CollisionDetector : MonoBehaviour {
 	bool manageWallSticking(relationToOther relation, Collider other){
 		PhysicsObject po = GetComponent<PhysicsObject>();
 		SticksToWalls stw = GetComponent<SticksToWalls>();
+		StickyWalls sw = other.GetComponent<StickyWalls>();
+		if (!sw) return false;
 		if (!stw) return false;
 		if (po.onGround) return false;
 		// Possible rotation solution -- however, needs to calculate touching distance differently
@@ -261,6 +263,7 @@ public class CollisionDetector : MonoBehaviour {
 		switch(relation){
 		case relationToOther.ONTOP:
 			if (!GetComponent<PhysicsObject>().onGround) return;
+			else if (onShroom) return;
 			else GetComponent<FallingObject>().fall();
 			break;
 		}	

@@ -46,7 +46,7 @@ public class JumpingObject : MonoBehaviour {
 		//	Update information about grounding
 		po.onGround = false;
 		GetComponent<CollisionDetector>().onShroom = null;
-		stw.onWall = false;
+		if (stw) stw.onWall = false;
 		//	Set up end of jump
 		jumpBottom = transform.position;	
 		doubleJump = false;
@@ -56,8 +56,9 @@ public class JumpingObject : MonoBehaviour {
 		PhysicsObject po = GetComponent<PhysicsObject>();
 		SticksToWalls stw = GetComponent<SticksToWalls>();
 		Vector3 jumpVelocityVec = Vector3.zero;
-		if ((stw && stw.onWall) || wallJumping) jumpVelocityVec = jumpFromWall();
-		else jumpVelocityVec = jumpFromGround();
+		bool onWall = stw && stw.onWall;
+		if (onWall || wallJumping) jumpVelocityVec = jumpFromWall();
+		else jumpVelocityVec += jumpFromGround();
 		po.vel = jumpVelocityVec;
 	}
 
@@ -100,7 +101,8 @@ public class JumpingObject : MonoBehaviour {
 		if (wallJumpVelocityActive){
 			GetComponent<PhysicsObject>().killHorVelocity = true;
 		}
-		if (atJumpTop() && !GetComponent<SticksToWalls>().onWall){
+		bool onWall = GetComponent<SticksToWalls>() && GetComponent<SticksToWalls>().onWall;
+		if (atJumpTop() && !onWall){
 			wallJumping = false;
 			fo.startJumpFall();
 		}
