@@ -32,6 +32,8 @@ public class CollisionDetector : MonoBehaviour {
 	public float sinkAmt = .001f;
 
 	public bool ____________________________;
+
+	public Collider wall = null;
 	
 	public Dictionary<Collider, relationToOther> touchingObjects 
 		= new Dictionary<Collider, relationToOther>();
@@ -49,7 +51,9 @@ public class CollisionDetector : MonoBehaviour {
 			other.enabled = false;
 			return;
 		}
-		touchingObjects.Add(other, getRelationToObject(other));
+		if (!touchingObjects.ContainsKey(other))
+			touchingObjects.Add(other, getRelationToObject(other));
+		else touchingObjects[other] = getRelationToObject(other);
 		if (touchingObjects [other] == relationToOther.ONTOP) {
 			land (other);
 		}
@@ -75,13 +79,16 @@ public class CollisionDetector : MonoBehaviour {
 		switchOnRelation(other);
 	}
 
-	void Update(){
+	void FixedUpdate(){
 		if (onShroom){
 			onShroom.modifyPosition(gameObject);
 			if (onShroom.offShroom(gameObject)) {
 				GetComponent<FallingObject>().fall();
 				onShroom = null;
 			}
+		}
+		if (wall){
+			if (atWallTop(wall)) landOnWallTop(wall);
 		}
 	}
 
@@ -176,6 +183,7 @@ public class CollisionDetector : MonoBehaviour {
 		//	Update the sticks to walls object
 		SticksToWalls stw = GetComponent<SticksToWalls>();
 		stw.onWall = true;
+		wall = other;
 		if (relation == relationToOther.TOLEFT) 
 			stw.stickingToLeftSideOfObject = true;
 		else stw.stickingToLeftSideOfObject = false;
@@ -189,7 +197,7 @@ public class CollisionDetector : MonoBehaviour {
 		if (relation == relationToOther.TOLEFT) {
 			changeX (other.bounds.center.x - (newHalfWidth + other.bounds.extents.x));
 		} else if (relation == relationToOther.TORIGHT) {
-			changeX(other.bounds.center.x + newHalfWidth + other.bounds.extents.x);
+			changeX(other.bounds.center.x + newHalfWidth + other.bounds.extents.x - sinkAmt);
 		}
 	}
 
@@ -201,6 +209,7 @@ public class CollisionDetector : MonoBehaviour {
 		SticksToWalls stw = GetComponent<SticksToWalls>();
 		touchingObjects[other] = relationToOther.ONTOP;
 		stw.onWall = false;
+		wall = null;
 		stw.landOnWallTop();
 	}
 
@@ -289,7 +298,7 @@ public class CollisionDetector : MonoBehaviour {
 			if (!other.GetComponent<StickyWalls>()) return;
 			SticksToWalls stw = GetComponent<SticksToWalls>();
 			if (!stw) return;
-			if (stw.onWall) landOnWallTop(other);
+			if (stw.onWall && atWallTop(other)) landOnWallTop(other);
 			break;
 		}	
 	}

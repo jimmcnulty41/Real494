@@ -26,20 +26,21 @@ public class Hero : MonoBehaviour {
 	public float throwingDelay; //time it takes to initiate throwing
 	public float betweenDelay; //time it takes between throws
 	public float miniJumpHeight;
-	public float miniJumpVelocity;
-
-	static public bool ______________________;
-
+	public float miniJumpVelocity;	
 	//GUI text:
 	public GUIText livesGT;
 	public GUIText typeGT;
 	public GUIText healthGT;
 	public GUIText keysGT;
+	//	Sprites
 	public Sprite nemoStd;
 	public Sprite nemoFrog;
 	public Sprite nemoLizard;
 	public Sprite nemoLizardOnWall;
 
+	static public bool ______________________;
+
+	
 	public int livesCount;
 	int keysCount;
 	public int keysMax;
@@ -47,6 +48,8 @@ public class Hero : MonoBehaviour {
 	bool canThrow = true; //flag for enable/disable throw
 	public bool immune = false;
 	bool miniJumped;
+	Vector3 nemoScale = new Vector3(.75f, 1f, 1f);
+	Vector3 nemoSpriteScale = new Vector3(1.46f, 1f, 1f);
 
 	
 	float originalJumpHeight;
@@ -151,18 +154,26 @@ public class Hero : MonoBehaviour {
 		type = other.gameObject.tag;
 		typeGT.text = "Type: " + type;
 		//transform.position = animalPOS;
-		GetComponent<JumpingObject> ().jumpHeight = animalJO.jumpHeight;
-		GetComponent<JumpingObject> ().jumpVelocity = animalJO.jumpVelocity;
-		GetComponent<FallingObject> ().fallSpeed = animalFO.fallSpeed;
-		GetComponent<FallingObject> ().transitionEasing = animalFO.transitionEasing;
+		//	Set jumping params
+		JumpingObject jo = GetComponent<JumpingObject>();
+		jo.jumpHeight = animalJO.jumpHeight;
+		jo.jumpVelocity = animalJO.jumpVelocity;
+		FallingObject fo = GetComponent<FallingObject>();
+		fo.fallSpeed = animalFO.fallSpeed;
+		fo.transitionEasing = animalFO.transitionEasing;
+
+		//	Change scale to match and make sure you're actually on the ground
+		transform.localScale = other.transform.localScale;
+		fo.fall();
 		//renderer.material.color = animalMAT.color;
 		//update special ability
 		if (type == "Frog") {
-			changeSprite("nemoFrog");
+			changeSprite("nemoFrog", other);
 			killOnJump = true;
 		} else if (type == "Lizard") {
-			changeSprite("nemoLizard");
-			stickToWalls = true;
+			changeSprite("nemoLizard", other);
+			GetComponent<HeroMovement>().runSpeed = 3;
+			gameObject.AddComponent<SticksToWalls>();
 		} 
 		//set the new original jump:
 		originalJumpHeight = GetComponent<JumpingObject>().jumpHeight;
@@ -172,6 +183,7 @@ public class Hero : MonoBehaviour {
 	}
 
 	void changeBack (){
+		if (GetComponent<SticksToWalls>()) Destroy(GetComponent<SticksToWalls>());
 		if (type == "Nemo")
 			return;
 		GetComponent<JumpingObject> ().jumpHeight = 1.2f;
@@ -180,8 +192,8 @@ public class Hero : MonoBehaviour {
 		GetComponent<FallingObject> ().transitionEasing = 0.05f;
 		type = "Nemo";
 		typeGT.text = "Type: " + type;
-
-		changeSprite("nemoStd");
+		transform.localScale = nemoScale;
+		changeSprite("nemoStd", collider);
 
 		originalJumpHeight = GetComponent<JumpingObject>().jumpHeight;
 		originalJumpVelocity = GetComponent<JumpingObject>().jumpVelocity;
@@ -192,13 +204,18 @@ public class Hero : MonoBehaviour {
 		canThrow = true;
 	}
 
-	public void changeSprite(string spriteName){
+	public void changeSprite(string spriteName, Collider other){
 		Transform child = transform.GetChild(0);
 		SpriteRenderer rend = child.GetComponent<SpriteRenderer>();
 		if (spriteName == "nemoStd") rend.sprite = nemoStd;
 		if (spriteName == "nemoFrog") rend.sprite = nemoFrog;
 		if (spriteName == "nemoLizard") rend.sprite = nemoLizard;
 		if (spriteName == "nemoLizardOnWall") rend.sprite = nemoLizardOnWall;
+
+		//	Adjust scale
+
+		child.localScale = other.transform.GetChild(0).localScale;
+		if (spriteName == "nemoStd") child.localScale = nemoSpriteScale;
 	}
 
 
