@@ -29,6 +29,7 @@ public class CollisionDetector : MonoBehaviour {
 	public float forgiveness = .3f;
 	public bool infinite_jump = false;
 	public ShroomCube onShroom = null;
+	public float sinkAmt = .001f;
 
 	public bool ____________________________;
 	
@@ -90,7 +91,7 @@ public class CollisionDetector : MonoBehaviour {
 		switch(touchingObjects[other]){
 			case relationToOther.ONTOP:
 			if (po.killHorVelocity) po.killHorVelocity = false;
-			changeY(other.transform.position.y + getTouchingDistanceY(other.gameObject));
+			changeY(other.bounds.center.y + getTouchingDistanceY(other.gameObject));
 			po.onGround = true;
 			land(other);
 			break;
@@ -105,9 +106,10 @@ public class CollisionDetector : MonoBehaviour {
 	}
 
 	//	Respond to hitting sides/bottoms---------------------------------
-
+	int candyLayer = 1;
 	void respondToSideHit(relationToOther relation, Collider other){
 		//	Handle sticking to walls if we should, otherwise, don't
+		if (gameObject.layer == candyLayer) return;
 		if (manageWallSticking(relation, other)) return;
 		//	If it has open sides, we go through them, so we don't adjust the position,
 		//	unless we're sticking to the wall, in which case we do
@@ -185,9 +187,9 @@ public class CollisionDetector : MonoBehaviour {
 	void stickToWallEdge(relationToOther relation, Collider other){
 		float newHalfWidth = GetComponent<SticksToWalls>().onWallShape.x / 2;
 		if (relation == relationToOther.TOLEFT) {
-			changeX (other.transform.position.x - (newHalfWidth + other.bounds.extents.x));
+			changeX (other.bounds.center.x - (newHalfWidth + other.bounds.extents.x));
 		} else if (relation == relationToOther.TORIGHT) {
-			changeX(other.transform.position.x + newHalfWidth + other.bounds.extents.x);
+			changeX(other.bounds.center.x + newHalfWidth + other.bounds.extents.x);
 		}
 	}
 
@@ -207,16 +209,16 @@ public class CollisionDetector : MonoBehaviour {
 
 	void moveToWallEdge(relationToOther relation, Collider other){
 		if (relation == relationToOther.TOLEFT) {
-			changeX (other.transform.position.x - getTouchingDistanceX (other.gameObject));
+			changeX (other.bounds.center.x - getTouchingDistanceX (other.gameObject));
 		} else if (relation == relationToOther.TORIGHT) {
-			changeX(other.transform.position.x + getTouchingDistanceX(other.gameObject));
+			changeX(other.bounds.center.x + getTouchingDistanceX(other.gameObject));
 		}
 	}
 
 	void respondToBottomHit(Collider other, PhysicsObject po){
 		OpenBottomObject hasOpenBottom = other.GetComponent<OpenBottomObject>();
 		if (hasOpenBottom) return;
-		changeY(other.transform.position.y - getTouchingDistanceY(other.gameObject));
+		changeY(other.bounds.center.y - getTouchingDistanceY(other.gameObject));
 		if (po.vel.y > 0)
 			GetComponent<FallingObject>().instantFall();
 	}
@@ -279,6 +281,7 @@ public class CollisionDetector : MonoBehaviour {
 		case relationToOther.ONTOP:
 			if (!GetComponent<PhysicsObject>().onGround) return;
 			else if (onShroom) return;
+			else if (isTouching(other) && inBounds(other)) return;
 			else GetComponent<FallingObject>().fall();
 			break;
 		case relationToOther.TORIGHT:
@@ -291,6 +294,13 @@ public class CollisionDetector : MonoBehaviour {
 		}	
 	}
 
+	bool isTouching(Collider other){
+		return (Mathf.Abs(
+			(collider.bounds.center.y - collider.bounds.extents.y)
+			-
+			(other.bounds.center.y + other.bounds.extents.y)
+			) < forgiveness);
+	}
 
 	//	General Functions for relationship between objects
 	//==========================================================
@@ -371,12 +381,12 @@ public class CollisionDetector : MonoBehaviour {
 	}
 	
 	float getTouchingDistanceY(GameObject other){
-		return vertHalfWidth(gameObject) + vertHalfWidth(other);
+		return vertHalfWidth(gameObject) + vertHalfWidth(other) - sinkAmt;
 	}
 		
 	float vertHalfWidth(GameObject go){
-		float yScale = go.transform.lossyScale.y;
-		return (yScale / 2);
+		float yScale = go.collider.bounds.extents.y;
+		return (yScale);
 	}
 	
 	float getRightEdge(GameObject go){
@@ -392,8 +402,8 @@ public class CollisionDetector : MonoBehaviour {
 	}
 
 	float horHalfWidth(GameObject go){
-		float xScale = go.transform.lossyScale.x;
-		return (xScale / 2);
+		float xScale = go.collider.bounds.extents.x;
+		return (xScale);
 	}
 
 	

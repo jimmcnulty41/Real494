@@ -61,9 +61,11 @@ public class MakeShroom : MonoBehaviour {
 		baseCube.transform.localScale = scale;
 
 		Vector3 pos = transform.position;
-		//pos.y -= height / 2;
+		pos.y -= height / 2;
 		baseCube.transform.position = pos;
 		//baseCube.transform.parent = shroomContainer.transform;
+		curXChange += 4 * xChange;
+		curYChange += 4 * yChange;
 	}
 
 	//	For creating individual cubes

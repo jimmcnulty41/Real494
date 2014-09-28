@@ -52,6 +52,10 @@ public class Hero : MonoBehaviour {
 	float originalJumpHeight;
 	float originalJumpVelocity;
 
+	void Awake(){
+		changeBack();
+	}
+
 	// Use this for initialization
 	void Start () {
 
@@ -140,18 +144,18 @@ public class Hero : MonoBehaviour {
 		//get features of the animal
 		JumpingObject animalJO = other.gameObject.GetComponent<JumpingObject> ();
 		FallingObject animalFO = other.gameObject.GetComponent<FallingObject> ();
-		Vector3 animalPOS = other.gameObject.transform.position;
-		Material animalMAT = other.gameObject.renderer.material;
+		//Vector3 animalPOS = other.gameObject.transform.position;
+		//Material animalMAT = other.gameObject.renderer.material;
 		Destroy (other.gameObject);
 		//transfer it to Nemo
 		type = other.gameObject.tag;
 		typeGT.text = "Type: " + type;
-		transform.position = animalPOS;
+		//transform.position = animalPOS;
 		GetComponent<JumpingObject> ().jumpHeight = animalJO.jumpHeight;
 		GetComponent<JumpingObject> ().jumpVelocity = animalJO.jumpVelocity;
 		GetComponent<FallingObject> ().fallSpeed = animalFO.fallSpeed;
 		GetComponent<FallingObject> ().transitionEasing = animalFO.transitionEasing;
-		renderer.material.color = animalMAT.color;
+		//renderer.material.color = animalMAT.color;
 		//update special ability
 		if (type == "Frog") {
 			changeSprite("nemoFrog");
@@ -177,7 +181,7 @@ public class Hero : MonoBehaviour {
 		type = "Nemo";
 		typeGT.text = "Type: " + type;
 
-		changeSprite("NemoStd");
+		changeSprite("nemoStd");
 
 		originalJumpHeight = GetComponent<JumpingObject>().jumpHeight;
 		originalJumpVelocity = GetComponent<JumpingObject>().jumpVelocity;
@@ -189,7 +193,8 @@ public class Hero : MonoBehaviour {
 	}
 
 	public void changeSprite(string spriteName){
-		SpriteRenderer rend = GetComponent<SpriteRenderer>();
+		Transform child = transform.GetChild(0);
+		SpriteRenderer rend = child.GetComponent<SpriteRenderer>();
 		if (spriteName == "nemoStd") rend.sprite = nemoStd;
 		if (spriteName == "nemoFrog") rend.sprite = nemoFrog;
 		if (spriteName == "nemoLizard") rend.sprite = nemoLizard;
@@ -208,7 +213,7 @@ public class Hero : MonoBehaviour {
 			//If not, check if you are hitting it from above by checking if hero's bottom is above the animal's top
 			float heroBottom = transform.position.y - (transform.lossyScale.y / 2);
 			float animalTop = other.gameObject.transform.position.y + (other.gameObject.transform.lossyScale.y / 2);
-			if (heroBottom >= animalTop) {
+			if (heroBottom >= animalTop - GetComponent<CollisionDetector>().forgiveness) {
 				kill (other);		
 			} else {
 				takeDamage();

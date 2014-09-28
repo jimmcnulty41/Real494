@@ -29,12 +29,12 @@ public class HeroMovement : MonoBehaviour {
 
 		if (Input.GetKey (KeyCode.LeftArrow)) {
 			po.changeSideSpeed (-runSpeed);
-			facingLeft = true;
+			if (facingLeft == false) changeDirection();
 		}
 		if (Input.GetKeyUp(KeyCode.LeftArrow)) po.changeSideSpeed(0);
 		if (Input.GetKey (KeyCode.RightArrow)) {
 			po.changeSideSpeed (runSpeed);
-			facingLeft = false;
+			if (facingLeft == true) changeDirection();
 		}
 		if (Input.GetKeyUp(KeyCode.RightArrow)) po.changeSideSpeed(0);
 
@@ -63,6 +63,20 @@ public class HeroMovement : MonoBehaviour {
 			if (GetComponent<PhysicsObject>().onGround) return;
 			GetComponent<FallingObject>().startJumpFall();
 		}
+	}
+
+	void changeDirection(){
+		Transform child = transform.GetChild(0);
+		SpriteRenderer sr = child.GetComponent<SpriteRenderer>();
+		Vector3 scale =  child.localScale;
+		if (!facingLeft){
+			scale.x *= -1;
+			facingLeft = true;
+		} else {
+			scale.x *= -1;
+			facingLeft = false;
+		}
+		child.localScale = scale;
 	}
 	
 	

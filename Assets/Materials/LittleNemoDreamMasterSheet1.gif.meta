@@ -1,0 +1,234 @@
+fileFormatVersion: 2
+guid: 188913b8f6aa5124580855075982dd71
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: BlueMiniShroom
+    21300002: RedShroom
+    21300004: Frog
+    21300006: EnterableFrog
+    21300008: NemoStd
+    21300010: TrunkPiece
+    21300012: TrunkEnd
+    21300014: BranchPeice
+    21300016: BranchEnd
+    21300018: RedMiniMushroom
+    21300020: BlueShroom
+    21300022: Snail
+    21300024: Candy
+    21300026: nemoFrog
+    21300028: nemoLizard
+    21300030: Key
+    21300032: Bee
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 1024
+  textureSettings:
+    filterMode: -1
+    aniso: 1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 25
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: BlueShroom
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 98
+        width: 98
+        height: 80
+      alignment: 9
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: RedShroom
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 98
+        width: 98
+        height: 80
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Frog
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 369
+        width: 23
+        height: 25
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: EnterableFrog
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 330
+        width: 26
+        height: 29
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: NemoStd
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 742
+        width: 22
+        height: 26
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TrunkPiece
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 12
+        width: 33
+        height: 32
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TrunkEnd
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 53
+        width: 28
+        height: 21
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: BranchPeice
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 12
+        width: 32
+        height: 29
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: BranchEnd
+      rect:
+        serializedVersion: 2
+        x: 58
+        y: 12
+        width: 16
+        height: 29
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: RedMiniMushroom
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 51
+        width: 34
+        height: 33
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: BlueMiniShroom
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 51
+        width: 34
+        height: 33
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Snail
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 265
+        width: 28
+        height: 25
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Candy
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 870
+        width: 18
+        height: 10
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: nemoFrog
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 621
+        width: 27
+        height: 23
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: nemoLizard
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 574
+        width: 29
+        height: 26
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Key
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 867
+        width: 8
+        height: 16
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Bee
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 222
+        width: 24
+        height: 32
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 
