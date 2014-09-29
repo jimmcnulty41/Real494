@@ -29,7 +29,7 @@ public class SnailSpawner : MonoBehaviour {
 			enabled = true;
 			return;
 		}
-		//otherwise check if a snail has been made and instaite
+		//otherwise check if a snail has been made and instantiate
 		if (snail == null) {
 			//check if spawner is enabled
 			if (enabled == true){

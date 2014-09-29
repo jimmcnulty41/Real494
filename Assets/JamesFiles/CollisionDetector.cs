@@ -55,7 +55,7 @@ public class CollisionDetector : MonoBehaviour {
 			touchingObjects.Add(other, getRelationToObject(other));
 		else touchingObjects[other] = getRelationToObject(other);
 		if (touchingObjects [other] == relationToOther.ONTOP) {
-			land (other);
+			if (other.tag != "Hero" && other.tag != "Candy") land (other);
 		}
 		if (touchingObjects[other] == relationToOther.ONSLOPE && !onShroom){
 			onShroom = other.GetComponent<ShroomCube>();
@@ -98,6 +98,7 @@ public class CollisionDetector : MonoBehaviour {
 		PhysicsObject po = GetComponent<PhysicsObject>();
 		switch(touchingObjects[other]){
 			case relationToOther.ONTOP:
+			if (other.tag == "Hero" || other.tag == "Candy") return;
 			if (po.killHorVelocity) po.killHorVelocity = false;
 			changeY(other.bounds.center.y + getTouchingDistanceY(other.gameObject));
 			po.onGround = true;

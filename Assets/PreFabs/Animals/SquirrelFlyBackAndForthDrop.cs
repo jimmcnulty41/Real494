@@ -6,14 +6,16 @@ public class SquirrelFlyBackAndForthDrop : MonoBehaviour {
 	public Vector3 startPos;
 	public float backDist = 3f;
 	public float fallDist = 3f;
-	public float speed = 1f;
 	public bool goingBack = true;
 	public bool goingForth = true;
 	public bool done = false;
+	public bool ________________;
+	float airSpeed;
 
 	// Use this for initialization
 	void Start () {
 		startPos = transform.position;
+		airSpeed = GetComponent<FlyingSquirrel>().airSpeed;
 	}
 	
 	// Update is called once per frame
@@ -34,7 +36,7 @@ public class SquirrelFlyBackAndForthDrop : MonoBehaviour {
 		}
 		GetComponent<FlyingSquirrel>().xHeld = true;
 		PhysicsObject po = GetComponent<PhysicsObject>();
-		po.changeSideSpeed(-speed);
+		po.changeSideSpeed(-airSpeed);
 
 	}
 
@@ -50,7 +52,7 @@ public class SquirrelFlyBackAndForthDrop : MonoBehaviour {
 		}
 		GetComponent<FlyingSquirrel>().xHeld = true;
 		PhysicsObject po = GetComponent<PhysicsObject>();
-		po.changeSideSpeed(speed);
+		po.changeSideSpeed(airSpeed);
 	}
 
 	void startDrop(){
@@ -72,7 +74,7 @@ public class SquirrelFlyBackAndForthDrop : MonoBehaviour {
 
 	void startFinal(){
 		PhysicsObject po = GetComponent<PhysicsObject>();
-		po.changeSideSpeed(speed);
+		po.changeSideSpeed(airSpeed);
 		GetComponent<FlyingSquirrel>().xHeld = true;
 		done = true;
 	}
