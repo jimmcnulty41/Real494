@@ -1,0 +1,46 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\GilFiles\Hero.cs">
+    <Files>
+      <File FileName="Assets\GilFiles\Hero.cs" Line="266" Column="15" />
+      <File FileName="Assets\JamesFiles\SticksToWalls.cs" Line="56" Column="19" />
+      <File FileName="Assets\JamesFiles\CollisionDetector.cs" Line="66" Column="19" />
+      <File FileName="Assets\JamesFiles\JumpingObject.cs" Line="108" Column="8" />
+      <File FileName="Assets\JamesFiles\HeroMovement.cs" Line="67" Column="2" />
+      <File FileName="Assets\GilFiles\Candy.cs" Line="50" Column="33" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="Assembly-CSharp" expanded="True">
+            <Node name="GilFiles" expanded="True">
+              <Node name="Hero.cs" selected="True" />
+            </Node>
+            <Node name="JamesFiles" expanded="True" />
+            <Node name="JamesMapTest" expanded="True" />
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="ClassPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State>
+          <Value>this.wallJumpVelocityActive</Value>
+          <Value>this.transform.position</Value>
+          <Value>this.collider.bounds.max</Value>
+          <Value>this.collider.bounds.min</Value>
+          <Value>other.bounds.max</Value>
+          <Value>other.bounds.min</Value>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="C:\Data\Programming\UnityFiles\P1-NESREMAKE\Assets\JamesFiles\CollisionDetector.cs" line="86" />
+      <Breakpoint file="C:\Data\Programming\UnityFiles\P1-NESREMAKE\Assets\JamesFiles\CollisionDetector.cs" line="209" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

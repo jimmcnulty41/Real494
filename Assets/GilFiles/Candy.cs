@@ -46,7 +46,8 @@ public class Candy : MonoBehaviour {
 	//	    && other.GetComponent<OpenBottomObject>())
 	//		return;
 		print ("Candy hitting " + other.name);
-		if (destroyOnHit(other.tag))
+		if (GetComponent<CollisionDetector>().getRelationToObject(other) == relationToOther.ONTOP
+		    || destroyOnHit(other.tag))
 			Destroy (gameObject);
 		
 	}

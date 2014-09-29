@@ -51,5 +51,9 @@ public class SticksToWalls : MonoBehaviour {
 		Transform child = transform.GetChild(0);
 		child.rotation = rotation;
 	}
+
+	public void remove(){
+		landOnWallTop();
+	}
 	
 }

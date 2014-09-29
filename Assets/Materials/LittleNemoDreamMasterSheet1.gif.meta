@@ -20,6 +20,8 @@ TextureImporter:
     21300030: Key
     21300032: Bee
     21300034: Lizard
+    21300036: Bedoor
+    21300038: Health
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -237,6 +239,26 @@ TextureImporter:
         x: 85
         y: 304
         width: 29
+        height: 16
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Bedoor
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 905
+        width: 49
+        height: 34
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Health
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 867
+        width: 16
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}

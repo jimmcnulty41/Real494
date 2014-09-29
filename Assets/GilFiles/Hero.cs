@@ -183,9 +183,14 @@ public class Hero : MonoBehaviour {
 	}
 
 	void changeBack (){
-		if (GetComponent<SticksToWalls>()) Destroy(GetComponent<SticksToWalls>());
+		SticksToWalls stw = GetComponent<SticksToWalls>();
+		if (stw){
+			stw.remove();
+			Destroy(stw);
+		}
 		if (type == "Nemo")
 			return;
+
 		GetComponent<JumpingObject> ().jumpHeight = 1.2f;
 		GetComponent<JumpingObject> ().jumpVelocity = 8.0f;
 		GetComponent<FallingObject> ().fallSpeed = 24.0f;
@@ -198,6 +203,7 @@ public class Hero : MonoBehaviour {
 		originalJumpHeight = GetComponent<JumpingObject>().jumpHeight;
 		originalJumpVelocity = GetComponent<JumpingObject>().jumpVelocity;
 
+		
 		killOnJump = false;
 		stickToWalls = false;
 		dig = false;
@@ -214,10 +220,16 @@ public class Hero : MonoBehaviour {
 
 		//	Adjust scale
 
-		child.localScale = other.transform.GetChild(0).localScale;
-		if (spriteName == "nemoStd") child.localScale = nemoSpriteScale;
+		Vector3 scale = other.transform.GetChild(0).localScale;
+		if (spriteName == "nemoStd") scale = nemoSpriteScale;
+		if (GetComponent<HeroMovement>().facingLeft) scale.x = Mathf.Abs(scale.x) * -1;
+		child.localScale = scale;
+
 	}
 
+	void OnTriggerStay(Collider other){
+		OnTriggerEnter(other);
+	}
 
 	void OnTriggerEnter(Collider other){
 		//first, check if its an Animal - only animals have this component
@@ -233,8 +245,9 @@ public class Hero : MonoBehaviour {
 			if (heroBottom >= animalTop - GetComponent<CollisionDetector>().forgiveness) {
 				kill (other);		
 			} else {
-				takeDamage();
 				miniJump();
+				takeDamage();
+
 			}
 		}
 		//if its not an animal, check if its a gui object and interact accordingly
@@ -250,7 +263,7 @@ public class Hero : MonoBehaviour {
 		} else if (other.gameObject.tag == "Health") {
 			print (health);
 			if (health < 4) {
-				health++;
+				health = 4;
 				print (health);
 			}
 			print (health);
@@ -270,6 +283,11 @@ public class Hero : MonoBehaviour {
 		GetComponent<JumpingObject> ().jumpHeight = miniJumpHeight;
 		//jump
 		GetComponent<JumpingObject> ().jump ();
+	}
+
+	void miniJump(Collider other){
+		if (other.tag == "Bee") return;
+		other.GetComponent<FallingObject>().instantFall();
 	}
 
 	public void landMiniJump(){
@@ -350,6 +368,7 @@ public class Hero : MonoBehaviour {
 		healthGT.text = "Health: " + health;
 		Vector3 savePoint = GetComponent<SavePoint> ().savePoint;
 		transform.position = savePoint;
+
 		changeBack ();
 	}
 }

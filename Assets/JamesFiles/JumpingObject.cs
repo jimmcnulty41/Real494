@@ -95,7 +95,9 @@ public class JumpingObject : MonoBehaviour {
 		if (GetComponent<PhysicsObject>().onGround) return;
 		managePhysics();
 	}
-	
+
+	int herolayer = 11;
+	int immunelayer = 13;
 	void managePhysics(){
 		FallingObject fo = GetComponent<FallingObject>();
 		if (wallJumpVelocityActive){
@@ -103,6 +105,10 @@ public class JumpingObject : MonoBehaviour {
 		}
 		bool onWall = GetComponent<SticksToWalls>() && GetComponent<SticksToWalls>().onWall;
 		if (atJumpTop() && !onWall){
+//			if (gameObject.layer == immunelayer){
+//				gameObject.layer = herolayer;
+//				
+//			}
 			wallJumping = false;
 			fo.startJumpFall();
 		}

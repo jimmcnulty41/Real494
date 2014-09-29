@@ -65,7 +65,7 @@ public class HeroMovement : MonoBehaviour {
 		}
 	}
 
-	void changeDirection(){
+	public void changeDirection(){
 		Transform child = transform.GetChild(0);
 		SpriteRenderer sr = child.GetComponent<SpriteRenderer>();
 		Vector3 scale =  child.localScale;
