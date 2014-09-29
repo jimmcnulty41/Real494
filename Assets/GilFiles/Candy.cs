@@ -58,6 +58,7 @@ public class Candy : MonoBehaviour {
 		if (tag == "Snail") return true;
 		if (tag == "Frog") return true;
 		if (tag == "Lizard") return true;
+		if (tag == "Squirrel") return true;
 		return false;
 	}
 }

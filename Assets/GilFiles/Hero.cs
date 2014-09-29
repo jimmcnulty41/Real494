@@ -283,7 +283,7 @@ public class Hero : MonoBehaviour {
 			Destroy (other.gameObject);
 		} else if (other.gameObject.tag == "Door") {
 			if (keysCount >= keysMax){
-				Application.LoadLevel ("_Scene_0");
+				Application.LoadLevel ("Fin");
 			}
 		}
 	}
@@ -367,7 +367,7 @@ public class Hero : MonoBehaviour {
 		StartCoroutine (Immune ());
 	}
 
-	void die (){
+	public void die (){
 		livesCount--;
 
 		if (livesCount <= 0) {

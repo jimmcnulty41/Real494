@@ -6,6 +6,7 @@ public class FlyingSquirrel : MonoBehaviour {
 	public float currentSpeed;
 	public float floatSpeed = 1f;
 	public float fallSpeed;
+	public bool xHeld = false;
 
 	void Awake(){
 		FallingObject fo = GetComponent<FallingObject>();
@@ -20,11 +21,12 @@ public class FlyingSquirrel : MonoBehaviour {
 			currentSpeed = fo.fallSpeed;
 			return;
 		}
-		if (Input.GetKey(KeyCode.X)){
+		if (Input.GetKey(KeyCode.X) || xHeld){
 			//	maintain slow fall speed
 			Vector3 vel = po.vel;
-			if (currentSpeed != floatSpeed) 
+			if (currentSpeed != floatSpeed) {
 				po.negateVertMovement();
+			}
 			fo.fallSpeed = floatSpeed;
 		} else {
 			//	Return to normal fall speed
