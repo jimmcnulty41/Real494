@@ -95,6 +95,9 @@ public class Hero : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		manageInputs();
+		Vector3 pos = transform.position;
+		pos.z = 0;
+		transform.position = pos;
 	}
 
 	void manageInputs(){
@@ -367,8 +370,10 @@ public class Hero : MonoBehaviour {
 		health = 3;
 		healthGT.text = "Health: " + health;
 		Vector3 savePoint = GetComponent<SavePoint> ().savePoint;
+		savePoint.z = 0;
 		transform.position = savePoint;
 
 		changeBack ();
+		GetComponent<FallingObject>().fall();
 	}
 }
