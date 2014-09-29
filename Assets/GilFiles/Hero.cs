@@ -38,6 +38,7 @@ public class Hero : MonoBehaviour {
 	public Sprite nemoLizard;
 	public Sprite nemoLizardOnWall;
 	public Sprite nemoSquirrel;
+	public string nextLevel;
 
 	static public bool ______________________;
 
@@ -283,7 +284,7 @@ public class Hero : MonoBehaviour {
 			Destroy (other.gameObject);
 		} else if (other.gameObject.tag == "Door") {
 			if (keysCount >= keysMax){
-				Application.LoadLevel ("Fin");
+				Application.LoadLevel (nextLevel);
 			}
 		}
 	}

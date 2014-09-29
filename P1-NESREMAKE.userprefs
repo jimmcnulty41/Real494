@@ -1,23 +1,29 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\GilFiles\Hero.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\GilFiles\GotoScene.cs">
     <Files>
-      <File FileName="Assets\GilFiles\Hero.cs" Line="266" Column="15" />
-      <File FileName="Assets\JamesFiles\SticksToWalls.cs" Line="56" Column="19" />
-      <File FileName="Assets\JamesFiles\CollisionDetector.cs" Line="66" Column="19" />
-      <File FileName="Assets\JamesFiles\JumpingObject.cs" Line="108" Column="8" />
-      <File FileName="Assets\JamesFiles\HeroMovement.cs" Line="67" Column="2" />
-      <File FileName="Assets\GilFiles\Candy.cs" Line="50" Column="33" />
+      <File FileName="Assets\GilFiles\GotoScene.cs" Line="9" Column="34" />
+      <File FileName="Assets\PreFabs\Animals\SquirrelFlyBackAndForthDrop.cs" Line="1" Column="1" />
+      <File FileName="Assets\GilFiles\press_control.cs" Line="16" Column="2" />
+      <File FileName="Assets\GilFiles\Candy.cs" Line="1" Column="1" />
+      <File FileName="Assets\JamesFiles\FlyingSquirrel.cs" Line="1" Column="1" />
+      <File FileName="Assets\GilFiles\press_objectives.cs" Line="1" Column="1" />
+      <File FileName="Assets\GilFiles\go_back.cs" Line="1" Column="1" />
+      <File FileName="Assets\GilFiles\press_start.cs" Line="1" Column="1" />
+      <File FileName="Assets\GilFiles\Hero.cs" Line="41" Column="25" />
+      <File FileName="Assets\JamesFiles\KillPoint.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Assembly-CSharp" expanded="True">
             <Node name="GilFiles" expanded="True">
-              <Node name="Hero.cs" selected="True" />
+              <Node name="GotoScene.cs" selected="True" />
             </Node>
             <Node name="JamesFiles" expanded="True" />
-            <Node name="JamesMapTest" expanded="True" />
+            <Node name="PreFabs" expanded="True">
+              <Node name="Animals" expanded="True" />
+            </Node>
           </Node>
         </State>
       </Pad>
@@ -38,8 +44,9 @@
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="C:\Data\Programming\UnityFiles\P1-NESREMAKE\Assets\JamesFiles\CollisionDetector.cs" line="86" />
-      <Breakpoint file="C:\Data\Programming\UnityFiles\P1-NESREMAKE\Assets\JamesFiles\CollisionDetector.cs" line="209" />
+      <Breakpoint file="C:\Data\Programming\UnityFiles\P1-NESREMAKE\Assets\JamesFiles\CollisionDetector.cs" line="87" />
+      <Breakpoint file="C:\Data\Programming\UnityFiles\P1-NESREMAKE\Assets\JamesFiles\CollisionDetector.cs" line="210" />
+      <Breakpoint file="C:\Data\Programming\UnityFiles\P1-NESREMAKE\Assets\PreFabs\Animals\SquirrelFlyBackAndForthDrop.cs" line="64" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
