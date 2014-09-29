@@ -37,6 +37,7 @@ public class Hero : MonoBehaviour {
 	public Sprite nemoFrog;
 	public Sprite nemoLizard;
 	public Sprite nemoLizardOnWall;
+	public Sprite nemoSquirrel;
 
 	static public bool ______________________;
 
@@ -177,7 +178,10 @@ public class Hero : MonoBehaviour {
 			changeSprite("nemoLizard", other);
 			GetComponent<HeroMovement>().runSpeed = 3;
 			gameObject.AddComponent<SticksToWalls>();
-		} 
+		} else if (type == "Squirrel") {
+			changeSprite("nemoSquirrel", other);
+			gameObject.AddComponent<FlyingSquirrel>();
+		}
 		//set the new original jump:
 		originalJumpHeight = GetComponent<JumpingObject>().jumpHeight;
 		originalJumpVelocity = GetComponent<JumpingObject>().jumpVelocity;
@@ -190,6 +194,10 @@ public class Hero : MonoBehaviour {
 		if (stw){
 			stw.remove();
 			Destroy(stw);
+		}
+		FlyingSquirrel fs = GetComponent<FlyingSquirrel>();
+		if (fs) {
+			Destroy(fs);
 		}
 		if (type == "Nemo")
 			return;
@@ -220,7 +228,7 @@ public class Hero : MonoBehaviour {
 		if (spriteName == "nemoFrog") rend.sprite = nemoFrog;
 		if (spriteName == "nemoLizard") rend.sprite = nemoLizard;
 		if (spriteName == "nemoLizardOnWall") rend.sprite = nemoLizardOnWall;
-
+		if (spriteName == "nemoSquirrel") rend.sprite = nemoSquirrel;
 		//	Adjust scale
 
 		Vector3 scale = other.transform.GetChild(0).localScale;

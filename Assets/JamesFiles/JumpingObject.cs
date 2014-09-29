@@ -18,7 +18,7 @@ public class JumpingObject : MonoBehaviour {
 	//	to a certain height, and fall down again
 	//	also have the ability to move sideways at a certain speed
 	
-	public float jumpVelocity = 6;
+	public float jumpVelocity = 8;
 	public float jumpHeight = 1.2f;
 	public float wallJumpHeight = .1f;
 	public Vector3 wallJumpVel;

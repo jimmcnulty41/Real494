@@ -80,6 +80,7 @@ public class CollisionDetector : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
+
 		if (onShroom){
 			onShroom.modifyPosition(gameObject);
 			if (onShroom.offShroom(gameObject)) {

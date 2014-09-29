@@ -17,8 +17,8 @@ using System.Collections;
 
 public class FallingObject : MonoBehaviour {
 
-	public float fallSpeed = 28;
-	public float setTransitionEasing = .1f;
+	public float fallSpeed = 24;
+	public float setTransitionEasing = .05f;
 	public bool falling = false;
 	public bool ______________________;
 	public float transitionEasing;
@@ -48,9 +48,12 @@ public class FallingObject : MonoBehaviour {
 	public void fall(){
 
 		//	If the object is in the air, and its velocity is negative,
-		//	we're already falling. do nothing further.
+		//	we're already falling. just ensure that the accel is where we want it to be.
 		PhysicsObject po = GetComponent<PhysicsObject>();
-		if (!po.onGround && GetComponent<PhysicsObject>().vel.y < 0) return;
+		if (!po.onGround && GetComponent<PhysicsObject>().vel.y < 0){
+			GetComponent<PhysicsObject>().accel = new Vector3(0,-fallSpeed,0);
+			return;
+		}
 
 		//	Otherwise, we start falling
 		po.onGround = false;
