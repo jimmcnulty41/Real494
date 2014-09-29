@@ -249,6 +249,7 @@ public class Hero : MonoBehaviour {
 				kill (other);		
 			} else {
 				miniJump();
+				animalFall(other);
 				takeDamage();
 
 			}
@@ -288,9 +289,9 @@ public class Hero : MonoBehaviour {
 		GetComponent<JumpingObject> ().jump ();
 	}
 
-	void miniJump(Collider other){
+	void animalFall(Collider other){
 		if (other.tag == "Bee") return;
-		other.GetComponent<FallingObject>().instantFall();
+		other.GetComponent<FallingObject> ().falling = true;
 	}
 
 	public void landMiniJump(){
