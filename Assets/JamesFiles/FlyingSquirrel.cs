@@ -8,6 +8,7 @@ public class FlyingSquirrel : MonoBehaviour {
 	public float fallSpeed;
 	public float groundSpeed;
 	public float airSpeed;
+	public float currentSideSpeed;
 	public bool xHeld = false;
 	public bool killMode = false;
 
@@ -30,8 +31,7 @@ public class FlyingSquirrel : MonoBehaviour {
 			normalDrop();
 		}
 		currentSpeed = fo.fallSpeed;
-		float currentMovementSpeed = GetComponent<HeroMovement>().runSpeed;
-		if (currentMovementSpeed == airSpeed) killMode = true;
+		if (currentSideSpeed == airSpeed) killMode = true;
 		else killMode = false;
 	}
 
@@ -65,6 +65,18 @@ public class FlyingSquirrel : MonoBehaviour {
 	void changeSpeed(float speed){
 		if (GetComponent<HeroMovement>())
 			GetComponent<HeroMovement>().runSpeed = speed;
+		else GetComponent<PhysicsObject>().changeSideSpeed(speed);
+		currentSideSpeed = speed;
+	}
+
+	void OnTriggerEnter(Collider other){
+		if (GetComponent<Hero>()) return;
+		if (!other.GetComponent<AnimalBehavior>()) return;
+		//	If we're at this point, it's colliding with an animal
+		other.gameObject.GetComponent<AnimalBehavior> ().health--;
+		if (other.gameObject.GetComponent<AnimalBehavior> ().health <= 0){
+			Destroy (other.gameObject);
+		}
 	}
 
 }
