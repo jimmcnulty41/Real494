@@ -14,7 +14,7 @@ public class go_back : MonoBehaviour {
 	}
 
 	void OnMouseDown () {
-		Application.LoadLevel("_Into");	
+		Application.LoadLevel("_Intro1");	
 	}
 
 }
