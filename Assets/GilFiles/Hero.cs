@@ -207,6 +207,7 @@ public class Hero : MonoBehaviour {
 		GetComponent<JumpingObject> ().jumpVelocity = 8.0f;
 		GetComponent<FallingObject> ().fallSpeed = 24.0f;
 		GetComponent<FallingObject> ().transitionEasing = 0.05f;
+		GetComponent<HeroMovement>().runSpeed = 2.5f;
 		type = "Nemo";
 		typeGT.text = "Type: " + type;
 		transform.localScale = nemoScale;
@@ -254,7 +255,8 @@ public class Hero : MonoBehaviour {
 			//If not, check if you are hitting it from above by checking if hero's bottom is above the animal's top
 			float heroBottom = transform.position.y - (transform.lossyScale.y / 2);
 			float animalTop = other.gameObject.transform.position.y + (other.gameObject.transform.lossyScale.y / 2);
-			if (heroBottom >= animalTop - GetComponent<CollisionDetector>().forgiveness) {
+			bool flyingKillMode = GetComponent<FlyingSquirrel>() && GetComponent<FlyingSquirrel>().killMode;
+			if (heroBottom >= animalTop - GetComponent<CollisionDetector>().forgiveness || flyingKillMode) {
 				kill (other);		
 			} else {
 				miniJump();
@@ -318,7 +320,8 @@ public class Hero : MonoBehaviour {
 
 
 	void kill (Collider other){
-		if (killOnJump == true) {
+		bool flyingKillMode = GetComponent<FlyingSquirrel>() && GetComponent<FlyingSquirrel>().killMode;
+		if (killOnJump == true || flyingKillMode) {
 			other.gameObject.GetComponent<AnimalBehavior> ().health--;
 			if (other.gameObject.GetComponent<AnimalBehavior> ().health <= 0){
 				Destroy (other.gameObject);

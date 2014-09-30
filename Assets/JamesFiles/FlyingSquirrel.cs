@@ -30,7 +30,8 @@ public class FlyingSquirrel : MonoBehaviour {
 			normalDrop();
 		}
 		currentSpeed = fo.fallSpeed;
-		if (currentSpeed == airSpeed) killMode = true;
+		float currentMovementSpeed = GetComponent<HeroMovement>().runSpeed;
+		if (currentMovementSpeed == airSpeed) killMode = true;
 		else killMode = false;
 	}
 

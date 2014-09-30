@@ -4,6 +4,7 @@ using System.Collections;
 public class Candy : MonoBehaviour {
 
 	public float velocityX;
+	int candyCountNeeded = 2;
 
 
 	// Use this for initialization
@@ -36,19 +37,20 @@ public class Candy : MonoBehaviour {
 				other.gameObject.GetComponent<AnimalBehavior>().GetStunned();
 			}
 			else { 
-				other.gameObject.GetComponent<AnimalBehavior>().candyCount++;
-				if (other.gameObject.GetComponent<AnimalBehavior>().candyCount >= 2)
-					other.gameObject.GetComponent<AnimalBehavior>().friendly = true;
+				other.GetComponent<AnimalBehavior>().candyCount++;
+				if (other.gameObject.GetComponent<AnimalBehavior>().candyCount >= candyCountNeeded)
+					other.GetComponent<AnimalBehavior>().makeFriendly();
 			}
 		}
 		//if (other.gameObject.GetComponent<OpenSideObject> () == null) {
 	//	if (other.GetComponent<CollisionDetector> ().getRelationToObject (other) == relationToOther.UNDERNEATH
 	//	    && other.GetComponent<OpenBottomObject>())
 	//		return;
-		print ("Candy hitting " + other.name);
+		print ("Candy hitting " + other.name + other.tag);
 		if (GetComponent<CollisionDetector>().getRelationToObject(other) == relationToOther.ONTOP
-		    || destroyOnHit(other.tag))
+		    || destroyOnHit(other.tag)){
 			Destroy (gameObject);
+		}
 		
 	}
 

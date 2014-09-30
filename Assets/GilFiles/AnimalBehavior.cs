@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class AnimalBehavior : MonoBehaviour {
-	public GameObject Message = null;
+	public Sprite friendlySprite;
 
 	public bool friendable;
 	public int health;
@@ -14,9 +14,11 @@ public class AnimalBehavior : MonoBehaviour {
 	bool stunned = false;
 
 
-	// Use this for initialization
-	void Start () {
-
+	public void makeFriendly(){
+		friendly = true;
+		Transform child = transform.GetChild(0);
+		SpriteRenderer sr = child.GetComponent<SpriteRenderer>();
+		sr.sprite = friendlySprite;
 	}
 	
 	// Update is called once per frame

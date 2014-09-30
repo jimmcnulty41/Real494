@@ -109,9 +109,17 @@ public class CollisionDetector : MonoBehaviour {
 			respondToSideHit(touchingObjects[other], other);
 			break;
 		case relationToOther.UNDERNEATH:
+			if (insideOf(other)) return;
 			respondToBottomHit(other, po);
 			break;
 		}
+	}
+
+	bool insideOf(Collider other){
+		return (collider.bounds.min.x <  other.bounds.max.x - forgiveness  
+		        && collider.bounds.max.x > other.bounds.min.x + forgiveness 
+		        && collider.bounds.min.y < other.bounds.max.y - forgiveness
+		        && collider.bounds.max.y > other.bounds.min.y + forgiveness);
 	}
 
 	//	Respond to hitting sides/bottoms---------------------------------
